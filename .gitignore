@@ -1,0 +1,28 @@
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# OMC / Claude
+.omc/
+.claude/
+
+# Backend
+backend/.gradle/
+backend/build/
+backend/bin/
+backend/.omc/
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/.omc/
+
+# Env
+.env
+.env.local
+*.log
