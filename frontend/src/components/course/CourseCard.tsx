@@ -52,14 +52,11 @@ export default function CourseCard({
             <ProgressBar percent={progressPercent} showLabel height="sm" />
           </div>
         ) : (
-          <div className="flex items-center justify-between mt-2">
-            <span className="text-sm font-bold text-[#222222]">{formatPrice(course.price)}</span>
-            {course.enrollmentCount !== undefined && (
-              <span className="text-xs text-[#717171]">
-                수강생 {course.enrollmentCount.toLocaleString()}명
-              </span>
-            )}
-          </div>
+          course.enrollmentCount !== undefined && (
+            <p className="text-xs text-[#717171] mt-2">
+              수강생 {course.enrollmentCount.toLocaleString()}명
+            </p>
+          )
         )}
       </div>
     </Link>

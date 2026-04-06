@@ -161,7 +161,7 @@ export default function CourseDetailPage(props: PageProps<'/courses/[courseId]'>
                   </div>
                 </div>
                 <div className="p-5">
-                  <p className="text-2xl font-bold text-[#222222] mb-5">{formatPrice(course.price)}</p>
+                  <p className="text-lg font-bold text-[#3B82F6] mb-5">무료 강의</p>
                   {enrollment ? (
                     <button
                       onClick={handleContinue}
