@@ -44,21 +44,21 @@ INSERT INTO section (course_id, title, sort_order) VALUES
 
 -- Lectures for Course 1, Section 1
 INSERT INTO lecture (section_id, title, video_url, duration, sort_order, is_preview) VALUES
-(1, 'Spring Boot 소개 및 설치', 'https://www.youtube.com/watch?v=Ke90Tje7VS0', 600, 1, TRUE),
-(1, 'Spring Initializr로 프로젝트 생성', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 720, 2, FALSE),
-(1, 'application.yml 설정 이해하기', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 540, 3, FALSE);
+(1, 'Spring Boot 소개 및 설치', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 600, 1, TRUE),
+(1, 'Spring Initializr로 프로젝트 생성', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 720, 2, FALSE),
+(1, 'application.yml 설정 이해하기', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 540, 3, FALSE);
 
 -- Lectures for Course 1, Section 2
 INSERT INTO lecture (section_id, title, video_url, duration, sort_order, is_preview) VALUES
-(2, '@RestController와 @GetMapping 이해', 'https://www.youtube.com/watch?v=Ke90Tje7VS0', 900, 1, FALSE),
-(2, 'Request 파라미터 처리하기', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 840, 2, FALSE),
-(2, '예외 처리와 GlobalExceptionHandler', 'https://www.youtube.com/watch?v=Ke90Tje7VS0', 960, 3, FALSE);
+(2, '@RestController와 @GetMapping 이해', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 900, 1, FALSE),
+(2, 'Request 파라미터 처리하기', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 840, 2, FALSE),
+(2, '예외 처리와 GlobalExceptionHandler', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 960, 3, FALSE);
 
 -- Lectures for Course 1, Section 3
 INSERT INTO lecture (section_id, title, video_url, duration, sort_order, is_preview) VALUES
-(3, 'JPA Entity 설계', 'https://www.youtube.com/watch?v=Ke90Tje7VS0', 1020, 1, FALSE),
-(3, 'Repository와 JPQL 작성', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 900, 2, FALSE),
-(3, '연관관계 매핑 실습', 'https://www.youtube.com/watch?v=Ke90Tje7VS0', 1080, 3, FALSE);
+(3, 'JPA Entity 설계', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 1020, 1, FALSE),
+(3, 'Repository와 JPQL 작성', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 900, 2, FALSE),
+(3, '연관관계 매핑 실습', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 1080, 3, FALSE);
 
 -- Sections for Course 2 (React)
 INSERT INTO section (course_id, title, sort_order) VALUES
@@ -67,14 +67,14 @@ INSERT INTO section (course_id, title, sort_order) VALUES
 
 -- Lectures for Course 2, Section 4
 INSERT INTO lecture (section_id, title, video_url, duration, sort_order, is_preview) VALUES
-(4, 'React 18 새로운 기능', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 780, 1, TRUE),
-(4, 'JSX와 컴포넌트 이해', 'https://www.youtube.com/watch?v=Ke90Tje7VS0', 660, 2, FALSE),
-(4, 'Hook: useState와 useEffect', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 900, 3, FALSE);
+(4, 'React 18 새로운 기능', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 780, 1, TRUE),
+(4, 'JSX와 컴포넌트 이해', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 660, 2, FALSE),
+(4, 'Hook: useState와 useEffect', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 900, 3, FALSE);
 
 -- Lectures for Course 2, Section 5
 INSERT INTO lecture (section_id, title, video_url, duration, sort_order, is_preview) VALUES
-(5, 'Context API로 전역 상태 관리', 'https://www.youtube.com/watch?v=Ke90Tje7VS0', 840, 1, FALSE),
-(5, 'Redux Toolkit 입문', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 1020, 2, FALSE);
+(5, 'Context API로 전역 상태 관리', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 840, 1, FALSE),
+(5, 'Redux Toolkit 입문', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 1020, 2, FALSE);
 
 -- Sections for Course 3 (Docker)
 INSERT INTO section (course_id, title, sort_order) VALUES
@@ -83,14 +83,14 @@ INSERT INTO section (course_id, title, sort_order) VALUES
 
 -- Lectures for Course 3, Section 6
 INSERT INTO lecture (section_id, title, video_url, duration, sort_order, is_preview) VALUES
-(6, 'Docker 개념과 설치', 'https://www.youtube.com/watch?v=Ke90Tje7VS0', 720, 1, TRUE),
-(6, 'Dockerfile 작성법', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 840, 2, FALSE),
-(6, 'Docker Compose 실습', 'https://www.youtube.com/watch?v=Ke90Tje7VS0', 960, 3, FALSE);
+(6, 'Docker 개념과 설치', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 720, 1, TRUE),
+(6, 'Dockerfile 작성법', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 840, 2, FALSE),
+(6, 'Docker Compose 실습', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 960, 3, FALSE);
 
 -- Lectures for Course 3, Section 7
 INSERT INTO lecture (section_id, title, video_url, duration, sort_order, is_preview) VALUES
-(7, 'Kubernetes 아키텍처 이해', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 900, 1, FALSE),
-(7, 'Pod와 Deployment 생성', 'https://www.youtube.com/watch?v=Ke90Tje7VS0', 1080, 2, FALSE);
+(7, 'Kubernetes 아키텍처 이해', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 900, 1, FALSE),
+(7, 'Pod와 Deployment 생성', 'https://www.youtube.com/watch?v=slHwFh8RVpc', 1080, 2, FALSE);
 
 -- Enrollment: student1 enrolled in course 1 and course 2
 INSERT INTO enrollment (user_id, course_id, is_completed, progress_rate, last_accessed_at) VALUES
