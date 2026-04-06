@@ -16,6 +16,7 @@ backend/.gradle/
 backend/build/
 backend/bin/
 backend/.omc/
+backend/src/main/resources/application.yml
 
 # Frontend
 frontend/node_modules/
