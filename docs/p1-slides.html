@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>LearnHub · P1 발표자료</title>
+<style>
+  @page { size: 297mm 167mm; margin: 0; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Pretendard:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --rausch: #FF385C;
+    --babu: #00A699;
+    --arches: #FC642D;
+    --hof: #484848;
+    --foggy: #767676;
+    --bg: #FFFFFF;
+    --line: #EBEBEB;
+  }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body {
+    margin: 0; padding: 0; background: #F7F7F7;
+    font-family: 'Pretendard', 'Inter', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+    color: var(--hof);
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em;
+  }
+  .slide {
+    width: 297mm; height: 167mm;
+    page-break-after: always;
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+    padding: 16mm 20mm;
+    display: flex; flex-direction: column;
+  }
+  .slide:last-child { page-break-after: auto; }
+
+  .num {
+    position: absolute; bottom: 12mm; right: 24mm;
+    font-size: 10pt; color: var(--foggy); font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  .brand {
+    position: absolute; top: 12mm; left: 24mm;
+    font-size: 10pt; font-weight: 700; color: var(--rausch);
+    letter-spacing: -0.01em;
+  }
+  .brand::before { content: '◆ '; }
+
+  .eyebrow {
+    font-size: 9pt; font-weight: 600; color: var(--rausch);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4mm;
+  }
+  .title { font-size: 30pt; font-weight: 800; line-height: 1.05; color: #222; margin: 0 0 4mm; letter-spacing: -0.03em; }
+  .subtitle { font-size: 13pt; color: var(--foggy); font-weight: 400; line-height: 1.5; max-width: 200mm; }
+
+  /* Cover */
+  .cover { background: linear-gradient(135deg, #FFFFFF 0%, #FFF5F7 100%); }
+  .cover .hero {
+    margin-top: auto; margin-bottom: auto;
+  }
+  .cover h1 {
+    font-size: 60pt; font-weight: 900; line-height: 0.95;
+    margin: 0 0 6mm; letter-spacing: -0.04em; color: #222;
+  }
+  .cover h1 .accent { color: var(--rausch); }
+  .cover .lead { font-size: 14pt; color: var(--foggy); font-weight: 500; }
+  .cover .meta {
+    position: absolute; bottom: 18mm; left: 24mm; right: 24mm;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-top: 1px solid var(--line); padding-top: 6mm;
+  }
+  .cover .meta .who { font-size: 11pt; color: var(--foggy); }
+  .cover .meta .who strong { color: #222; font-weight: 700; }
+  .cover .meta .badge {
+    background: var(--rausch); color: #fff;
+    padding: 3mm 6mm; border-radius: 999px;
+    font-size: 10pt; font-weight: 700; letter-spacing: 0.05em;
+  }
+
+  /* TOC */
+  .toc-list { margin-top: 6mm; }
+  .toc-item {
+    display: flex; align-items: center; gap: 8mm;
+    padding: 5mm 0; border-bottom: 1px solid var(--line);
+  }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-num {
+    font-size: 11pt; font-weight: 800; color: var(--rausch);
+    width: 14mm; letter-spacing: -0.02em;
+  }
+  .toc-name { font-size: 16pt; font-weight: 700; color: #222; flex: 1; letter-spacing: -0.02em; }
+  .toc-desc { font-size: 10pt; color: var(--foggy); }
+
+  /* Section pages */
+  .section .body { margin-top: 8mm; flex: 1; display: flex; gap: 10mm; }
+
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5mm; width: 100%; }
+  .card {
+    background: #FAFAFA; border: 1px solid var(--line); border-radius: 14px;
+    padding: 6mm; display: flex; flex-direction: column;
+  }
+  .card .ico {
+    width: 10mm; height: 10mm; border-radius: 10px;
+    background: var(--rausch); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12pt; font-weight: 800; margin-bottom: 4mm;
+  }
+  .card.babu .ico { background: var(--babu); }
+  .card.arches .ico { background: var(--arches); }
+  .card h3 { font-size: 12pt; font-weight: 800; margin: 0 0 2mm; color: #222; letter-spacing: -0.02em; line-height: 1.25; }
+  .card p { font-size: 9pt; color: var(--foggy); line-height: 1.55; margin: 0; }
+
+  /* 프로젝트 개요 */
+  .overview .body { gap: 12mm; }
+  .overview .left { flex: 1.1; }
+  .overview .right { flex: 1; background: #FAFAFA; border-radius: 20px; padding: 10mm; display: flex; flex-direction: column; justify-content: center; }
+  .overview p { font-size: 11pt; color: #555; line-height: 1.7; margin: 0 0 4mm; }
+  .stat { display: flex; align-items: baseline; gap: 3mm; margin-bottom: 5mm; }
+  .stat:last-child { margin-bottom: 0; }
+  .stat .v { font-size: 26pt; font-weight: 900; color: var(--rausch); letter-spacing: -0.03em; }
+  .stat .l { font-size: 10pt; color: var(--foggy); font-weight: 500; }
+
+  /* 기술 스택 */
+  .stack-row { display: flex; align-items: center; gap: 6mm; margin-bottom: 6mm; }
+  .stack-row:last-child { margin-bottom: 0; }
+  .stack-tag {
+    display: inline-block; padding: 2.5mm 5mm; border-radius: 999px;
+    font-size: 10pt; font-weight: 600;
+    background: #FFF5F7; color: var(--rausch); border: 1px solid #FFD9E0;
+  }
+  .stack-tag.b { background: #E6F7F5; color: var(--babu); border-color: #B7E6E0; }
+  .stack-tag.o { background: #FFF1E8; color: var(--arches); border-color: #FFD4B5; }
+  .stack-label {
+    width: 36mm; font-size: 11pt; font-weight: 700; color: #222;
+  }
+  .stack-tags { display: flex; flex-wrap: wrap; gap: 3mm; }
+
+  /* 시연 */
+  .demo .body { gap: 8mm; }
+  .demo-card {
+    flex: 1; background: #FAFAFA; border: 1px solid var(--line); border-radius: 16px;
+    padding: 8mm; display: flex; flex-direction: column;
+  }
+  .demo-card .step {
+    font-size: 10pt; font-weight: 800; color: var(--rausch); letter-spacing: 0.1em;
+  }
+  .demo-card h3 { font-size: 18pt; margin: 3mm 0 4mm; font-weight: 800; color: #222; letter-spacing: -0.02em; }
+  .demo-card ul { margin: 0; padding-left: 5mm; }
+  .demo-card li { font-size: 10pt; color: #555; line-height: 1.7; margin-bottom: 1.5mm; }
+
+  /* End */
+  .end { background: #222; color: #fff; align-items: flex-start; justify-content: center; }
+  .end .brand { color: #FF7A8C; }
+  .end .num { color: #888; }
+  .end h1 { font-size: 56pt; font-weight: 900; margin: auto 0; line-height: 1; letter-spacing: -0.04em; }
+  .end h1 .accent { color: var(--rausch); }
+  .end p { font-size: 14pt; color: #aaa; margin-bottom: 12mm; }
+</style>
+</head>
+<body>
+
+<!-- 1. Cover -->
+<section class="slide cover">
+  <div class="brand">LearnHub</div>
+  <div class="hero">
+    <div class="eyebrow">P1 · Personal Service</div>
+    <h1>배움의 흐름,<br/><span class="accent">한 곳에서.</span></h1>
+    <div class="lead">개인 학습을 위한 실시간 인강 플랫폼</div>
+  </div>
+  <div class="meta">
+    <div class="who">
+      <strong>LearnHub</strong> · 인강 학습 플랫폼<br/>
+      P1 단계 · 기초 / 개인서비스
+    </div>
+    <div class="badge">2026 · P1</div>
+  </div>
+</section>
+
+<!-- 2. TOC -->
+<section class="slide">
+  <div class="brand">LearnHub</div>
+  <div class="eyebrow">Table of Contents</div>
+  <h2 class="title">목차</h2>
+  <div class="toc-list">
+    <div class="toc-item">
+      <div class="toc-num">01</div>
+      <div class="toc-name">프로젝트 개요</div>
+      <div class="toc-desc">무엇을, 왜 만들었는가</div>
+    </div>
+    <div class="toc-item">
+      <div class="toc-num">02</div>
+      <div class="toc-name">주요 기능</div>
+      <div class="toc-desc">사용자가 경험하는 핵심</div>
+    </div>
+    <div class="toc-item">
+      <div class="toc-num">03</div>
+      <div class="toc-name">기술 스택</div>
+      <div class="toc-desc">구현에 사용한 기술</div>
+    </div>
+    <div class="toc-item">
+      <div class="toc-num">04</div>
+      <div class="toc-name">시연</div>
+      <div class="toc-desc">실제로 동작하는 모습</div>
+    </div>
+  </div>
+  <div class="num">02</div>
+</section>
+
+<!-- 3. 프로젝트 개요 -->
+<section class="slide overview">
+  <div class="brand">LearnHub</div>
+  <div class="eyebrow">01 · Overview</div>
+  <h2 class="title">프로젝트 개요</h2>
+  <div class="body">
+    <div class="left">
+      <p><strong style="color:#222">LearnHub</strong>는 누구나 무료로 강의를 듣고, 자신의 진도를 관리하며, 같은 강의를 듣는 사람들과 의견을 나눌 수 있는 인강 학습 플랫폼입니다.</p>
+      <p>P1 단계에서는 인증·결제 같은 부가 기능 대신 <strong style="color:#222">"학습 그 자체"</strong>에 집중했습니다. 강의를 고르고, 듣고, 진도가 자동으로 저장되며, 댓글로 소통하는 가장 핵심적인 흐름을 완성했습니다.</p>
+    </div>
+    <div class="right">
+      <div class="stat"><div class="v">7</div><div class="l">강의 카테고리</div></div>
+      <div class="stat"><div class="v">100%</div><div class="l">전 강의 무료</div></div>
+      <div class="stat"><div class="v">3</div><div class="l">Flyway 마이그레이션</div></div>
+    </div>
+  </div>
+  <div class="num">03</div>
+</section>
+
+<!-- 4. 주요 기능 -->
+<section class="slide section">
+  <div class="brand">LearnHub</div>
+  <div class="eyebrow">02 · Features</div>
+  <h2 class="title">주요 기능</h2>
+  <div class="body">
+    <div class="grid-3">
+      <div class="card">
+        <div class="ico">▶</div>
+        <h3>강의 시청 &<br/>자동 진도 저장</h3>
+        <p>YouTube IFrame Player로 영상을 재생하고, 10초마다 마지막 시청 위치를 DB에 저장합니다. 90% 시점에 도달하면 자동으로 강의 완료 처리됩니다.</p>
+      </div>
+      <div class="card babu">
+        <div class="ico">≡</div>
+        <h3>섹션 기반<br/>커리큘럼 탐색</h3>
+        <p>강의는 섹션으로 묶여 사이드바에서 한눈에 확인할 수 있습니다. 현재 강의가 강조되고, 완료한 강의는 체크되며, 진도율도 함께 표시됩니다.</p>
+      </div>
+      <div class="card arches">
+        <div class="ico">✦</div>
+        <h3>댓글 &<br/>좋아요 / 답글</h3>
+        <p>강의마다 댓글을 작성·수정·삭제할 수 있고, 1단계 답글과 좋아요를 지원합니다. 작성자만 본인 글을 수정할 수 있도록 권한을 검증합니다.</p>
+      </div>
+      <div class="card">
+        <div class="ico">◐</div>
+        <h3>수강 신청 &<br/>내 강의실</h3>
+        <p>관심 있는 강의를 등록하고, 마지막으로 본 시간 기준으로 정렬된 내 강의실에서 학습을 이어갈 수 있습니다.</p>
+      </div>
+      <div class="card babu">
+        <div class="ico">⌕</div>
+        <h3>카테고리 &<br/>강의 탐색</h3>
+        <p>백엔드, 프론트엔드, AI/ML 등 7개 카테고리로 강의를 분류하고 검색·필터링할 수 있습니다.</p>
+      </div>
+      <div class="card arches">
+        <div class="ico">◉</div>
+        <h3>회원 &<br/>대시보드</h3>
+        <p>회원가입 후 내 학습 현황을 대시보드에서 확인할 수 있습니다. 등록 강의 수, 진행률 등을 한눈에 볼 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+  <div class="num">04</div>
+</section>
+
+<!-- 5. 기술 스택 -->
+<section class="slide section">
+  <div class="brand">LearnHub</div>
+  <div class="eyebrow">03 · Tech Stack</div>
+  <h2 class="title">기술 스택</h2>
+  <div class="body" style="flex-direction: column; gap: 6mm;">
+    <div class="stack-row">
+      <div class="stack-label">Frontend</div>
+      <div class="stack-tags">
+        <span class="stack-tag">Next.js</span>
+        <span class="stack-tag">TypeScript</span>
+        <span class="stack-tag">Tailwind CSS</span>
+      </div>
+    </div>
+    <div class="stack-row">
+      <div class="stack-label">Backend</div>
+      <div class="stack-tags">
+        <span class="stack-tag b">Spring Boot</span>
+        <span class="stack-tag b">Java</span>
+      </div>
+    </div>
+    <div class="stack-row">
+      <div class="stack-label">Database</div>
+      <div class="stack-tags">
+        <span class="stack-tag o">MySQL</span>
+      </div>
+    </div>
+  </div>
+  <div class="num">05</div>
+</section>
+
+<!-- 6. 시연 -->
+<section class="slide section demo">
+  <div class="brand">LearnHub</div>
+  <div class="eyebrow">04 · Live Demo</div>
+  <h2 class="title">시연</h2>
+  <p class="subtitle" style="margin-top: 4mm;">실제로 동작하는 화면을 함께 살펴보겠습니다.</p>
+  <div class="num">06</div>
+</section>
+
+<!-- 7. End -->
+<section class="slide end">
+  <div class="brand">LearnHub</div>
+  <p style="position:absolute; top:48mm; left:24mm; font-size:14pt; color:#aaa; margin:0;">감사합니다.</p>
+  <h1>Learn,<br/><span class="accent">your way.</span></h1>
+  <div class="num">07</div>
+</section>
+
+</body>
+</html>

@@ -7,6 +7,7 @@ import { getCourseDetail, getCourseProgress } from '@/lib/api/courses';
 import { getLecture } from '@/lib/api/lectures';
 import VideoPlayer from '@/components/learning/VideoPlayer';
 import CourseSidebar from '@/components/learning/CourseSidebar';
+import CommentSection from '@/components/learning/CommentSection';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { usePlayerStore } from '@/stores/usePlayerStore';
 import { useAuthStore } from '@/stores/useAuthStore';
@@ -111,11 +112,13 @@ export default function LearnPage(props: PageProps<'/learn/[courseId]/[lectureId
   const nextId = getAdjacentLecture('next');
 
   return (
-    <div className="flex h-[calc(100vh-64px)] bg-gray-900 overflow-hidden">
+    <div className="flex bg-white min-h-[calc(100vh-64px)]">
       {/* Main content */}
-      <div className="flex flex-col flex-1 min-w-0">
-        {/* Video */}
-        <div className="flex-shrink-0">
+      <div
+        className="flex flex-col flex-1 min-w-0 pr-4 sm:pr-6"
+        style={{ paddingLeft: 'max(1rem, calc((100vw - 80rem) / 2 + 2rem))' }}
+      >
+        <div className="max-w-4xl w-full pt-4">
           <VideoPlayer
             lecture={lecture}
             onLectureComplete={handleLectureComplete}
@@ -124,8 +127,8 @@ export default function LearnPage(props: PageProps<'/learn/[courseId]/[lectureId
         </div>
 
         {/* Lecture info + navigation */}
-        <div className="flex-1 overflow-y-auto bg-white">
-          <div className="max-w-4xl mx-auto px-4 py-5">
+        <div>
+          <div className="max-w-4xl w-full py-5">
             {/* Nav buttons */}
             <div className="flex items-center justify-between mb-4">
               <button
@@ -160,12 +163,14 @@ export default function LearnPage(props: PageProps<'/learn/[courseId]/[lectureId
 
             <h1 className="text-xl font-bold text-gray-900 mb-2">{lecture.title}</h1>
             <p className="text-sm text-gray-500">{course.title}</p>
+
+            <CommentSection lectureId={lecture.id} />
           </div>
         </div>
       </div>
 
       {/* Desktop sidebar */}
-      <div className="hidden lg:flex w-80 flex-shrink-0 flex-col">
+      <div className="hidden lg:flex w-80 flex-shrink-0 flex-col sticky top-16 self-start h-[calc(100vh-64px)]">
         <CourseSidebar
           courseTitle={course.title}
           sections={course.sections}

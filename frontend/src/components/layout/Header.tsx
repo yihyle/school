@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { useAuthStore } from '@/stores/useAuthStore';
+import Logo from '@/components/common/Logo';
 
 const CATEGORIES = [
   { value: 'all', label: '전체' },
@@ -50,14 +51,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-1.5 flex-shrink-0">
-            <div className="w-8 h-8 bg-[#3B82F6] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">L</span>
-            </div>
-            <span className="text-lg font-bold text-[#222222]">
-              Learn<span className="text-[#3B82F6]">Hub</span>
-            </span>
-          </Link>
+          <Logo size={30} />
 
           {/* Search pill — center */}
           <button

@@ -159,10 +159,11 @@ export default function VideoPlayer({ lecture, onLectureComplete, onEnded }: Vid
   }
 
   return (
-    <div className="w-full bg-black">
-      <div className="relative aspect-video">
-        <div ref={containerRef} className="absolute inset-0" />
-      </div>
+    <div
+      className="relative aspect-video w-full overflow-hidden"
+      style={{ maxHeight: 'calc(100vh - 280px)', maxWidth: 'calc((100vh - 280px) * 16 / 9)' }}
+    >
+      <div ref={containerRef} className="absolute inset-0" />
     </div>
   );
 }

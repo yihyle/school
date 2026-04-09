@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Logo from '@/components/common/Logo';
 
 export default function Footer() {
   return (
@@ -37,14 +38,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-[#EBEBEB] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-1.5">
-            <div className="w-6 h-6 bg-[#3B82F6] rounded flex items-center justify-center">
-              <span className="text-white font-bold text-[10px]">L</span>
-            </div>
-            <span className="text-sm font-bold text-[#222222]">
-              Learn<span className="text-[#3B82F6]">Hub</span>
-            </span>
-          </div>
+          <Logo size={22} textClassName="text-sm font-bold tracking-tight text-[#191F28]" />
           <p className="text-xs text-[#717171]">© 2026 LearnHub. All rights reserved.</p>
         </div>
       </div>
