@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
+    List<Course> findByInstructorId(Long instructorId);
+
     @Query("SELECT c FROM Course c WHERE c.isPublished = true " +
            "AND (:category IS NULL OR c.category = :category) " +
            "AND (:keyword IS NULL OR c.title LIKE %:keyword% OR c.description LIKE %:keyword%)")
