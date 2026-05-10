@@ -99,22 +99,34 @@ export default function Header() {
                   <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 overflow-hidden">
                     <div className="px-4 py-2.5 border-b border-gray-100">
                       <p className="text-sm font-semibold text-[#222222]">{user.nickname}</p>
-                      <p className="text-xs text-[#717171] mt-0.5">학습자</p>
+                      <p className="text-xs text-[#717171] mt-0.5">{user.role === 'INSTRUCTOR' ? '강사' : '학습자'}</p>
                     </div>
-                    <Link
-                      href="/my-courses"
-                      onClick={() => setDropdownOpen(false)}
-                      className="block px-4 py-2.5 text-sm text-[#222222] hover:bg-gray-50 transition-colors"
-                    >
-                      내 강의실
-                    </Link>
-                    <Link
-                      href="/dashboard"
-                      onClick={() => setDropdownOpen(false)}
-                      className="block px-4 py-2.5 text-sm text-[#222222] hover:bg-gray-50 transition-colors"
-                    >
-                      대시보드
-                    </Link>
+                    {user.role === 'INSTRUCTOR' ? (
+                      <Link
+                        href="/instructor"
+                        onClick={() => setDropdownOpen(false)}
+                        className="block px-4 py-2.5 text-sm text-[#222222] hover:bg-gray-50 transition-colors"
+                      >
+                        강사 대시보드
+                      </Link>
+                    ) : (
+                      <>
+                        <Link
+                          href="/my-courses"
+                          onClick={() => setDropdownOpen(false)}
+                          className="block px-4 py-2.5 text-sm text-[#222222] hover:bg-gray-50 transition-colors"
+                        >
+                          내 강의실
+                        </Link>
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setDropdownOpen(false)}
+                          className="block px-4 py-2.5 text-sm text-[#222222] hover:bg-gray-50 transition-colors"
+                        >
+                          대시보드
+                        </Link>
+                      </>
+                    )}
                     <div className="border-t border-gray-100 mt-1 pt-1">
                       <button
                         onClick={handleLogout}
@@ -184,8 +196,14 @@ export default function Header() {
           <div className="max-w-7xl mx-auto px-4 space-y-1">
             <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-[#222222] hover:bg-gray-50 rounded-xl">홈</Link>
             <Link href="/courses" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-[#222222] hover:bg-gray-50 rounded-xl">강의</Link>
-            <Link href="/my-courses" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-[#222222] hover:bg-gray-50 rounded-xl">내 강의실</Link>
-            <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-[#222222] hover:bg-gray-50 rounded-xl">대시보드</Link>
+            {isLoggedIn && user?.role === 'INSTRUCTOR' ? (
+              <Link href="/instructor" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-[#222222] hover:bg-gray-50 rounded-xl">강사 대시보드</Link>
+            ) : (
+              <>
+                <Link href="/my-courses" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-[#222222] hover:bg-gray-50 rounded-xl">내 강의실</Link>
+                <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-[#222222] hover:bg-gray-50 rounded-xl">대시보드</Link>
+              </>
+            )}
             {!isLoggedIn && (
               <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-[#3B82F6] hover:bg-blue-50 rounded-xl">로그인</Link>
             )}

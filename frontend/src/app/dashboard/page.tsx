@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import type { UserDashboard, Enrollment } from '@/types';
+import type { UserDashboard, MyCourseResponse } from '@/types';
 import { getUserDashboard } from '@/lib/api/users';
 import { getMyCourses } from '@/lib/api/enrollments';
 import { getCourseProgress } from '@/lib/api/courses';
@@ -10,9 +10,7 @@ import ProgressBar from '@/components/common/ProgressBar';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useAuthStore } from '@/stores/useAuthStore';
 
-interface EnrollmentWithProgress extends Enrollment {
-  progressPercent: number;
-}
+type EnrollmentWithProgress = MyCourseResponse & { progressPercent: number };
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
@@ -26,7 +24,7 @@ export default function DashboardPage() {
       try {
         const [dashboardData, myCoursesData] = await Promise.all([
           getUserDashboard(user?.id ?? 1),
-          getMyCourses(user?.id ?? 1),
+          getMyCourses(),
         ]);
         setDashboard(dashboardData);
         const withProgress = await Promise.all(
@@ -115,28 +113,24 @@ export default function DashboardPage() {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {enrollments.map((enrollment) => {
-              const course = enrollment.course;
-              if (!course) return null;
-              return (
-                <Link
-                  key={enrollment.id}
-                  href={`/courses/${course.id}`}
-                  className="p-5 bg-[#F7F7F7] rounded-2xl hover:bg-[#EBEBEB] transition-colors group"
-                >
-                  <div className="flex items-start gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-[#222222] flex items-center justify-center flex-shrink-0">
-                      <span className="text-white font-bold text-sm">{course.title.charAt(0)}</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-[#222222] text-sm line-clamp-2 group-hover:text-[#3B82F6] transition-colors">{course.title}</h3>
-                      <p className="text-xs text-[#717171] mt-0.5">{course.instructorNickname}</p>
-                    </div>
+            {enrollments.map((enrollment) => (
+              <Link
+                key={enrollment.enrollmentId}
+                href={`/courses/${enrollment.courseId}`}
+                className="p-5 bg-[#F7F7F7] rounded-2xl hover:bg-[#EBEBEB] transition-colors group"
+              >
+                <div className="flex items-start gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-[#222222] flex items-center justify-center flex-shrink-0">
+                    <span className="text-white font-bold text-sm">{enrollment.courseTitle.charAt(0)}</span>
                   </div>
-                  <ProgressBar percent={enrollment.progressPercent} showLabel height="sm" />
-                </Link>
-              );
-            })}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-[#222222] text-sm line-clamp-2 group-hover:text-[#3B82F6] transition-colors">{enrollment.courseTitle}</h3>
+                    <p className="text-xs text-[#717171] mt-0.5">{enrollment.instructorNickname}</p>
+                  </div>
+                </div>
+                <ProgressBar percent={enrollment.progressPercent} showLabel height="sm" />
+              </Link>
+            ))}
           </div>
         </div>
       ) : (

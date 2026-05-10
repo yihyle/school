@@ -1,18 +1,13 @@
 import apiClient from './axios';
-import type { Enrollment } from '@/types';
+import type { Enrollment, MyCourseResponse } from '@/types';
 
-export const enrollCourse = async (
-  userId: number = 1,
-  courseId: number
-): Promise<Enrollment> => {
-  const response = await apiClient.post('/api/v1/enrollments', { userId, courseId });
+export const enrollCourse = async (courseId: number): Promise<Enrollment> => {
+  const response = await apiClient.post('/api/v1/enrollments', { courseId });
   return response.data;
 };
 
-export const getMyCourses = async (userId: number = 1): Promise<Enrollment[]> => {
-  const response = await apiClient.get('/api/v1/enrollments/my-courses', {
-    params: { userId },
-  });
+export const getMyCourses = async (): Promise<MyCourseResponse[]> => {
+  const response = await apiClient.get('/api/v1/enrollments/my-courses');
   return response.data;
 };
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { CourseDetail, Enrollment } from '@/types';
+import type { CourseDetail } from '@/types';
 import { getCourseDetail } from '@/lib/api/courses';
 import { enrollCourse, getMyCourses } from '@/lib/api/enrollments';
 import SectionAccordion from '@/components/curriculum/SectionAccordion';
@@ -15,7 +15,7 @@ export default function CourseDetailPage(props: PageProps<'/courses/[courseId]'>
   const { user } = useAuthStore();
   const [courseId, setCourseId] = useState<number | null>(null);
   const [course, setCourse] = useState<CourseDetail | null>(null);
-  const [enrollment, setEnrollment] = useState<Enrollment | null>(null);
+  const [isEnrolled, setIsEnrolled] = useState(false);
   const [loading, setLoading] = useState(true);
   const [enrolling, setEnrolling] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,11 +32,11 @@ export default function CourseDetailPage(props: PageProps<'/courses/[courseId]'>
       try {
         const [courseData, myCoursesData] = await Promise.all([
           getCourseDetail(courseId),
-          getMyCourses(user?.id ?? 1),
+          getMyCourses(),
         ]);
         setCourse(courseData);
         const found = myCoursesData.find((e) => e.courseId === courseId);
-        setEnrollment(found ?? null);
+        setIsEnrolled(!!found);
       } catch {
         setError('강의 정보를 불러오는 데 실패했습니다.');
       } finally {
@@ -51,8 +51,8 @@ export default function CourseDetailPage(props: PageProps<'/courses/[courseId]'>
     if (!user) { router.push('/login'); return; }
     setEnrolling(true);
     try {
-      const newEnrollment = await enrollCourse(user.id, courseId);
-      setEnrollment(newEnrollment);
+      await enrollCourse(courseId);
+      setIsEnrolled(true);
     } catch {
       alert('수강 신청에 실패했습니다. 다시 시도해 주세요.');
     } finally {
@@ -144,7 +144,7 @@ export default function CourseDetailPage(props: PageProps<'/courses/[courseId]'>
                   key={section.id}
                   section={section}
                   courseId={course.id}
-                  isClickable={!!enrollment}
+                  isClickable={isEnrolled}
                   defaultOpen={idx === 0}
                 />
               ))}
@@ -162,7 +162,7 @@ export default function CourseDetailPage(props: PageProps<'/courses/[courseId]'>
                 </div>
                 <div className="p-5">
                   <p className="text-lg font-bold text-[#3B82F6] mb-5">무료 강의</p>
-                  {enrollment ? (
+                  {isEnrolled ? (
                     <button
                       onClick={handleContinue}
                       className="w-full py-3.5 bg-[#222222] text-white font-semibold rounded-xl hover:bg-[#3B82F6] transition-colors duration-200"
