@@ -1,3 +1,12 @@
+// ─── Auth ─────────────────────────────────────────────────────────────────────
+
+export interface AuthResponse {
+  accessToken: string;
+  tokenType: string;
+  expiresIn: number;
+  user: User;
+}
+
 // ─── User ────────────────────────────────────────────────────────────────────
 
 export interface User {
@@ -67,6 +76,45 @@ export interface Enrollment {
   completed?: boolean;
   progressRate?: number;
   course?: Course;
+}
+
+export interface MyCourseResponse {
+  enrollmentId: number;
+  courseId: number;
+  courseTitle: string;
+  thumbnailUrl?: string;
+  category: string;
+  level: string;
+  instructorNickname?: string;
+  completed: boolean;
+  progressRate?: number;
+  enrolledAt: string;
+  lastAccessedAt?: string;
+}
+
+// ─── Instructor ───────────────────────────────────────────────────────────────
+
+export interface InstructorCourse {
+  id: number;
+  title: string;
+  description: string;
+  thumbnailUrl?: string;
+  category: string;
+  level: string;
+  price: number;
+  isPublished: boolean;
+  enrollmentCount: number;
+  createdAt: string;
+}
+
+export interface CreateCourseRequest {
+  title: string;
+  description: string;
+  thumbnailUrl?: string;
+  category: string;
+  level: string;
+  price?: number;
+  isPublished?: boolean;
 }
 
 // ─── Progress ────────────────────────────────────────────────────────────────

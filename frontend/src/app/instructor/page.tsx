@@ -1,0 +1,315 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/stores/useAuthStore';
+import type { InstructorCourse, CreateCourseRequest } from '@/types';
+import { getMyCourses, createCourse, deleteCourse, addSection, addLecture } from '@/lib/api/instructor';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+
+const CATEGORIES = ['BACKEND', 'FRONTEND', 'MOBILE', 'AI_ML', 'DATA_SCIENCE', 'DEVOPS', 'CS'];
+const LEVELS = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED'];
+const LEVEL_LABEL: Record<string, string> = { BEGINNER: '입문', INTERMEDIATE: '중급', ADVANCED: '고급' };
+const CAT_LABEL: Record<string, string> = {
+  BACKEND: '백엔드', FRONTEND: '프론트엔드', MOBILE: '모바일',
+  AI_ML: 'AI/ML', DATA_SCIENCE: '데이터 사이언스', DEVOPS: 'DevOps', CS: 'CS/기타',
+};
+
+const empty: CreateCourseRequest = {
+  title: '', description: '', thumbnailUrl: '', category: 'BACKEND', level: 'BEGINNER', price: 0, isPublished: false,
+};
+
+export default function InstructorPage() {
+  const router = useRouter();
+  const { user, isLoggedIn } = useAuthStore();
+
+  const [courses, setCourses] = useState<InstructorCourse[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState<CreateCourseRequest>(empty);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // section/lecture modal state
+  const [sectionModal, setSectionModal] = useState<{ courseId: number; title: string } | null>(null);
+  const [lectureModal, setLectureModal] = useState<{ sectionId: number; title: string; videoUrl: string } | null>(null);
+
+  useEffect(() => {
+    if (!isLoggedIn) { router.replace('/login'); return; }
+    if (user?.role !== 'INSTRUCTOR') { router.replace('/dashboard'); return; }
+    fetchCourses();
+  }, [isLoggedIn, user]);
+
+  const fetchCourses = async () => {
+    try {
+      const data = await getMyCourses();
+      setCourses(data);
+    } catch {
+      setError('강의 목록을 불러오는 데 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      const created = await createCourse(form);
+      setCourses((prev) => [created, ...prev]);
+      setForm(empty);
+      setShowForm(false);
+    } catch {
+      alert('강의 등록에 실패했습니다.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (courseId: number, title: string) => {
+    if (!confirm(`"${title}" 강의를 삭제하시겠습니까?`)) return;
+    try {
+      await deleteCourse(courseId);
+      setCourses((prev) => prev.filter((c) => c.id !== courseId));
+    } catch {
+      alert('강의 삭제에 실패했습니다.');
+    }
+  };
+
+  const handleAddSection = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!sectionModal) return;
+    try {
+      await addSection(sectionModal.courseId, { title: sectionModal.title });
+      setSectionModal(null);
+      alert('섹션이 추가되었습니다.');
+    } catch {
+      alert('섹션 추가에 실패했습니다.');
+    }
+  };
+
+  const handleAddLecture = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!lectureModal) return;
+    try {
+      await addLecture(lectureModal.sectionId, { title: lectureModal.title, videoUrl: lectureModal.videoUrl });
+      setLectureModal(null);
+      alert('강의 영상이 추가되었습니다.');
+    } catch {
+      alert('강의 영상 추가에 실패했습니다.');
+    }
+  };
+
+  if (loading) return <LoadingSpinner fullScreen />;
+
+  return (
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-[#222222]">강사 대시보드</h1>
+          <p className="text-[#717171] text-sm mt-1">내 강의를 관리하고 새 강의를 등록하세요</p>
+        </div>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="px-5 py-2.5 bg-[#222222] text-white text-sm font-semibold rounded-xl hover:bg-[#3B82F6] transition-colors"
+        >
+          {showForm ? '취소' : '+ 강의 등록'}
+        </button>
+      </div>
+
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+
+      {/* 강의 등록 폼 */}
+      {showForm && (
+        <form
+          onSubmit={handleCreate}
+          className="bg-[#F7F7F7] rounded-2xl p-6 mb-8 space-y-4"
+        >
+          <h2 className="text-lg font-bold text-[#222222] mb-2">새 강의 등록</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-[#222222] mb-1">제목 *</label>
+              <input
+                required
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                className="w-full px-4 py-2.5 border border-[#EBEBEB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6] bg-white"
+                placeholder="강의 제목"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[#222222] mb-1">썸네일 URL</label>
+              <input
+                value={form.thumbnailUrl ?? ''}
+                onChange={(e) => setForm({ ...form, thumbnailUrl: e.target.value })}
+                className="w-full px-4 py-2.5 border border-[#EBEBEB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6] bg-white"
+                placeholder="https://..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[#222222] mb-1">카테고리 *</label>
+              <select
+                required
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                className="w-full px-4 py-2.5 border border-[#EBEBEB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6] bg-white"
+              >
+                {CATEGORIES.map((c) => <option key={c} value={c}>{CAT_LABEL[c]}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[#222222] mb-1">난이도 *</label>
+              <select
+                required
+                value={form.level}
+                onChange={(e) => setForm({ ...form, level: e.target.value })}
+                className="w-full px-4 py-2.5 border border-[#EBEBEB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6] bg-white"
+              >
+                {LEVELS.map((l) => <option key={l} value={l}>{LEVEL_LABEL[l]}</option>)}
+              </select>
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-[#222222] mb-1">설명</label>
+              <textarea
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                rows={3}
+                className="w-full px-4 py-2.5 border border-[#EBEBEB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6] bg-white resize-none"
+                placeholder="강의 소개를 입력하세요"
+              />
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <label className="flex items-center gap-2 text-sm text-[#222222]">
+              <input
+                type="checkbox"
+                checked={form.isPublished ?? false}
+                onChange={(e) => setForm({ ...form, isPublished: e.target.checked })}
+                className="w-4 h-4 rounded"
+              />
+              즉시 공개
+            </label>
+          </div>
+          <div className="flex gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="px-6 py-2.5 bg-[#3B82F6] text-white text-sm font-semibold rounded-xl hover:bg-[#1E40AF] transition-colors disabled:opacity-50"
+            >
+              {submitting ? '등록 중...' : '강의 등록'}
+            </button>
+            <button
+              type="button"
+              onClick={() => { setShowForm(false); setForm(empty); }}
+              className="px-6 py-2.5 bg-white border border-[#EBEBEB] text-sm font-medium text-[#717171] rounded-xl hover:bg-[#F7F7F7] transition-colors"
+            >
+              취소
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* 강의 목록 */}
+      {courses.length === 0 ? (
+        <div className="text-center py-24 text-[#717171]">
+          <p className="text-xl font-medium mb-2">등록한 강의가 없습니다</p>
+          <p className="text-sm">위의 버튼을 눌러 첫 강의를 등록해 보세요</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <p className="text-sm text-[#717171]">
+            총 <span className="font-semibold text-[#222222]">{courses.length}</span>개의 강의
+          </p>
+          {courses.map((course) => (
+            <div key={course.id} className="bg-white rounded-2xl border border-[#EBEBEB] p-5 hover:shadow-md transition-shadow">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-medium text-[#717171]">{CAT_LABEL[course.category] ?? course.category}</span>
+                    <span className="text-xs text-[#EBEBEB]">·</span>
+                    <span className="text-xs font-medium text-[#717171]">{LEVEL_LABEL[course.level] ?? course.level}</span>
+                    {course.isPublished ? (
+                      <span className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">공개</span>
+                    ) : (
+                      <span className="text-xs font-semibold text-[#717171] bg-[#F7F7F7] px-2 py-0.5 rounded-full">비공개</span>
+                    )}
+                  </div>
+                  <h3 className="text-base font-bold text-[#222222] mb-1 line-clamp-1">{course.title}</h3>
+                  <p className="text-sm text-[#717171] line-clamp-2">{course.description}</p>
+                  <div className="flex items-center gap-4 mt-3 text-sm text-[#717171]">
+                    <span>수강생 <strong className="text-[#222222]">{course.enrollmentCount}</strong>명</span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2 flex-shrink-0">
+                  <button
+                    onClick={() => setSectionModal({ courseId: course.id, title: '' })}
+                    className="px-4 py-2 text-xs font-medium text-[#3B82F6] border border-[#3B82F6] rounded-xl hover:bg-blue-50 transition-colors whitespace-nowrap"
+                  >
+                    섹션 추가
+                  </button>
+                  <button
+                    onClick={() => handleDelete(course.id, course.title)}
+                    className="px-4 py-2 text-xs font-medium text-red-500 border border-red-200 rounded-xl hover:bg-red-50 transition-colors"
+                  >
+                    삭제
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* 섹션 추가 모달 */}
+      {sectionModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <form onSubmit={handleAddSection} className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
+            <h3 className="text-lg font-bold text-[#222222] mb-4">섹션 추가</h3>
+            <input
+              required
+              autoFocus
+              value={sectionModal.title}
+              onChange={(e) => setSectionModal({ ...sectionModal, title: e.target.value })}
+              className="w-full px-4 py-2.5 border border-[#EBEBEB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6] mb-4"
+              placeholder="섹션 제목"
+            />
+            <div className="flex gap-3">
+              <button type="submit" className="flex-1 py-2.5 bg-[#3B82F6] text-white text-sm font-semibold rounded-xl hover:bg-[#1E40AF] transition-colors">추가</button>
+              <button type="button" onClick={() => setSectionModal(null)} className="flex-1 py-2.5 bg-[#F7F7F7] text-[#717171] text-sm font-medium rounded-xl hover:bg-[#EBEBEB] transition-colors">취소</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* 영상 추가 모달 */}
+      {lectureModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <form onSubmit={handleAddLecture} className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
+            <h3 className="text-lg font-bold text-[#222222] mb-4">강의 영상 추가</h3>
+            <div className="space-y-3">
+              <input
+                required
+                autoFocus
+                value={lectureModal.title}
+                onChange={(e) => setLectureModal({ ...lectureModal, title: e.target.value })}
+                className="w-full px-4 py-2.5 border border-[#EBEBEB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6]"
+                placeholder="영상 제목"
+              />
+              <input
+                value={lectureModal.videoUrl}
+                onChange={(e) => setLectureModal({ ...lectureModal, videoUrl: e.target.value })}
+                className="w-full px-4 py-2.5 border border-[#EBEBEB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6]"
+                placeholder="YouTube URL (선택)"
+              />
+            </div>
+            <div className="flex gap-3 mt-4">
+              <button type="submit" className="flex-1 py-2.5 bg-[#3B82F6] text-white text-sm font-semibold rounded-xl hover:bg-[#1E40AF] transition-colors">추가</button>
+              <button type="button" onClick={() => setLectureModal(null)} className="flex-1 py-2.5 bg-[#F7F7F7] text-[#717171] text-sm font-medium rounded-xl hover:bg-[#EBEBEB] transition-colors">취소</button>
+            </div>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+}
