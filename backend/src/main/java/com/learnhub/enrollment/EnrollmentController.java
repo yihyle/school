@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,13 +24,17 @@ public class EnrollmentController {
 
     @PostMapping
     @Operation(summary = "수강 신청")
-    public ResponseEntity<EnrollmentResponse> enroll(@Valid @RequestBody EnrollmentRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(enrollmentService.enroll(request));
+    public ResponseEntity<EnrollmentResponse> enroll(
+            @AuthenticationPrincipal Long userId,
+            @Valid @RequestBody EnrollmentRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(enrollmentService.enroll(userId, request.getCourseId()));
     }
 
     @GetMapping("/my-courses")
     @Operation(summary = "내 수강 목록 조회")
-    public ResponseEntity<List<MyCourseResponse>> getMyCourses(@RequestParam Long userId) {
+    public ResponseEntity<List<MyCourseResponse>> getMyCourses(
+            @AuthenticationPrincipal Long userId) {
         return ResponseEntity.ok(enrollmentService.getMyCourses(userId));
     }
 

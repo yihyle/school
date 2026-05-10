@@ -4,7 +4,6 @@ import com.learnhub.common.exception.DuplicateResourceException;
 import com.learnhub.common.exception.ResourceNotFoundException;
 import com.learnhub.course.Course;
 import com.learnhub.course.CourseRepository;
-import com.learnhub.enrollment.dto.EnrollmentRequest;
 import com.learnhub.enrollment.dto.EnrollmentResponse;
 import com.learnhub.enrollment.dto.MyCourseResponse;
 import com.learnhub.user.User;
@@ -27,14 +26,14 @@ public class EnrollmentService {
     private final CourseRepository courseRepository;
 
     @Transactional
-    public EnrollmentResponse enroll(EnrollmentRequest request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User", request.getUserId()));
-        Course course = courseRepository.findById(request.getCourseId())
-                .orElseThrow(() -> new ResourceNotFoundException("Course", request.getCourseId()));
+    public EnrollmentResponse enroll(Long userId, Long courseId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", userId));
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Course", courseId));
 
-        if (enrollmentRepository.existsByUserIdAndCourseId(request.getUserId(), request.getCourseId())) {
-            throw new DuplicateResourceException("Already enrolled in this course");
+        if (enrollmentRepository.existsByUserIdAndCourseId(userId, courseId)) {
+            throw new DuplicateResourceException("이미 수강 중인 강의입니다");
         }
 
         Enrollment enrollment = Enrollment.builder()
@@ -55,7 +54,6 @@ public class EnrollmentService {
     public List<MyCourseResponse> getMyCourses(Long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
-
         return enrollmentRepository.findByUserId(userId).stream()
                 .map(MyCourseResponse::from)
                 .collect(Collectors.toList());
