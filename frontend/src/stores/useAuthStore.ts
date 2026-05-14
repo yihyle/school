@@ -2,49 +2,56 @@
 
 import { create } from 'zustand';
 import type { User } from '@/types';
-import { getUser } from '@/lib/api/users';
+import { getMe } from '@/lib/api/auth';
 
-const STORAGE_KEY = 'learnhub_user';
+const TOKEN_KEY = 'learnhub_token';
+const USER_KEY = 'learnhub_user';
 
 interface AuthState {
   user: User | null;
   isLoggedIn: boolean;
-  login: (user: User) => void;
+  login: (token: string, user: User) => void;
   logout: () => void;
-  initialize: () => void;
+  initialize: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isLoggedIn: false,
 
-  login: (user: User) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+  login: (token: string, user: User) => {
+    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
     set({ user, isLoggedIn: true });
   },
 
   logout: () => {
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
     set({ user: null, isLoggedIn: false });
   },
 
   initialize: async () => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (!stored) return;
+      const token = localStorage.getItem(TOKEN_KEY);
+      const stored = localStorage.getItem(USER_KEY);
+      if (!token || !stored) return;
+
       const user: User = JSON.parse(stored);
       set({ user, isLoggedIn: true });
+
       try {
-        const fresh = await getUser(user.id);
+        const fresh = await getMe();
         set({ user: fresh, isLoggedIn: true });
-      } catch (err: any) {
-        if (err?.response?.status === 404) {
-          localStorage.removeItem(STORAGE_KEY);
-          set({ user: null, isLoggedIn: false });
-        }
+        localStorage.setItem(USER_KEY, JSON.stringify(fresh));
+      } catch {
+        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem(USER_KEY);
+        set({ user: null, isLoggedIn: false });
       }
     } catch {
-      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
       set({ user: null, isLoggedIn: false });
     }
   },

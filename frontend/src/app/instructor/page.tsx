@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/useAuthStore';
 import type { InstructorCourse, CreateCourseRequest, Section } from '@/types';
-import { getMyCourses, createCourse, deleteCourse, addSection, addLecture } from '@/lib/api/instructor';
+import { getMyCourses, createCourse, deleteCourse, addSection, addLecture, uploadThumbnail } from '@/lib/api/instructor';
 import { getCourseDetail } from '@/lib/api/courses';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 
@@ -30,6 +30,8 @@ export default function InstructorPage() {
   const [form, setForm] = useState<CreateCourseRequest>(empty);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+  const [thumbnailUploading, setThumbnailUploading] = useState(false);
 
   // 섹션 펼치기
   const [expandedId, setExpandedId] = useState<number | null>(null);
@@ -77,6 +79,22 @@ export default function InstructorPage() {
     if (!sectionsMap[courseId]) await fetchSections(courseId);
   };
 
+  const handleThumbnailFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setThumbnailPreview(URL.createObjectURL(file));
+    setThumbnailUploading(true);
+    try {
+      const url = await uploadThumbnail(file);
+      setForm((prev) => ({ ...prev, thumbnailUrl: url }));
+    } catch {
+      alert('썸네일 업로드에 실패했습니다.');
+      setThumbnailPreview(null);
+    } finally {
+      setThumbnailUploading(false);
+    }
+  };
+
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -84,6 +102,7 @@ export default function InstructorPage() {
       const created = await createCourse(form);
       setCourses((prev) => [created, ...prev]);
       setForm(empty);
+      setThumbnailPreview(null);
       setShowForm(false);
     } catch {
       alert('강의 등록에 실패했습니다.');
@@ -167,11 +186,26 @@ export default function InstructorPage() {
                 placeholder="강의 제목" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#222222] mb-1">썸네일 URL</label>
-              <input value={form.thumbnailUrl ?? ''}
-                onChange={(e) => setForm({ ...form, thumbnailUrl: e.target.value })}
-                className="w-full px-4 py-2.5 border border-[#EBEBEB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6] bg-white"
-                placeholder="https://..." />
+              <label className="block text-sm font-medium text-[#222222] mb-1">썸네일 이미지</label>
+              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[#EBEBEB] rounded-xl cursor-pointer hover:border-[#3B82F6] transition-colors bg-white overflow-hidden relative">
+                {thumbnailPreview ? (
+                  <img src={thumbnailPreview} alt="preview" className="absolute inset-0 w-full h-full object-cover" />
+                ) : (
+                  <div className="flex flex-col items-center gap-1 text-[#717171]">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4-4a3 3 0 014 0l4 4m-4-8a1 1 0 110-2 1 1 0 010 2zm6 8l2-2a3 3 0 014 0" />
+                    </svg>
+                    <span className="text-xs">{thumbnailUploading ? '업로드 중...' : '이미지 선택'}</span>
+                  </div>
+                )}
+                <input type="file" accept="image/*" className="hidden" onChange={handleThumbnailFile} disabled={thumbnailUploading} />
+              </label>
+              {thumbnailPreview && (
+                <button type="button" onClick={() => { setThumbnailPreview(null); setForm((p) => ({ ...p, thumbnailUrl: '' })); }}
+                  className="mt-1 text-xs text-red-500 hover:underline">
+                  제거
+                </button>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-[#222222] mb-1">카테고리 *</label>
@@ -209,7 +243,7 @@ export default function InstructorPage() {
               className="px-6 py-2.5 bg-[#3B82F6] text-white text-sm font-semibold rounded-xl hover:bg-[#1E40AF] transition-colors disabled:opacity-50">
               {submitting ? '등록 중...' : '강의 등록'}
             </button>
-            <button type="button" onClick={() => { setShowForm(false); setForm(empty); }}
+            <button type="button" onClick={() => { setShowForm(false); setForm(empty); setThumbnailPreview(null); }}
               className="px-6 py-2.5 bg-white border border-[#EBEBEB] text-sm font-medium text-[#717171] rounded-xl hover:bg-[#F7F7F7] transition-colors">
               취소
             </button>

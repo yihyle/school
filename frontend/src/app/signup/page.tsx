@@ -13,6 +13,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [role, setRole] = useState<'STUDENT' | 'INSTRUCTOR'>('STUDENT');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -27,10 +28,14 @@ export default function SignupPage() {
       setError('비밀번호가 일치하지 않습니다.');
       return;
     }
+    if (password.length < 8) {
+      setError('비밀번호는 8자 이상이어야 합니다.');
+      return;
+    }
     setLoading(true);
     try {
-      const user = await signupApi(email, password, nickname);
-      login(user);
+      const { accessToken, user } = await signupApi(email, password, nickname, role);
+      login(accessToken, user);
       router.replace('/');
     } catch {
       setError('회원가입에 실패했습니다. 이미 사용 중인 이메일일 수 있습니다.');
@@ -43,7 +48,6 @@ export default function SignupPage() {
     <div className="min-h-[80vh] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-2xl shadow-lg border border-[#EBEBEB] overflow-hidden">
-          {/* Header */}
           <div className="border-b border-[#EBEBEB] px-6 py-4 text-center">
             <h1 className="text-base font-semibold text-[#222222]">회원가입</h1>
           </div>
@@ -73,7 +77,7 @@ export default function SignupPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                placeholder="비밀번호"
+                placeholder="비밀번호 (8자 이상)"
                 className="w-full px-4 py-3.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#222222] focus:border-transparent transition placeholder:text-[#717171]"
               />
               <input
@@ -84,6 +88,32 @@ export default function SignupPage() {
                 placeholder="비밀번호 확인"
                 className="w-full px-4 py-3.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#222222] focus:border-transparent transition placeholder:text-[#717171]"
               />
+
+              {/* 역할 선택 */}
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setRole('STUDENT')}
+                  className={`py-3 rounded-xl border text-sm font-semibold transition-colors ${
+                    role === 'STUDENT'
+                      ? 'bg-[#222222] text-white border-[#222222]'
+                      : 'bg-white text-[#717171] border-gray-300 hover:border-[#222222]'
+                  }`}
+                >
+                  학생으로 가입
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole('INSTRUCTOR')}
+                  className={`py-3 rounded-xl border text-sm font-semibold transition-colors ${
+                    role === 'INSTRUCTOR'
+                      ? 'bg-[#222222] text-white border-[#222222]'
+                      : 'bg-white text-[#717171] border-gray-300 hover:border-[#222222]'
+                  }`}
+                >
+                  강사로 가입
+                </button>
+              </div>
 
               {error && (
                 <p className="text-sm text-red-500 text-center">{error}</p>
@@ -98,7 +128,6 @@ export default function SignupPage() {
               </button>
             </form>
 
-            {/* Divider */}
             <div className="flex items-center gap-3 my-6">
               <div className="flex-1 h-px bg-[#EBEBEB]" />
               <span className="text-xs text-[#717171]">또는</span>

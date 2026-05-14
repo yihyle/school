@@ -1,6 +1,15 @@
 import apiClient from './axios';
 import type { InstructorCourse, CreateCourseRequest } from '@/types';
 
+export const uploadThumbnail = async (file: File): Promise<string> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const response = await apiClient.post<{ url: string }>('/api/v1/upload/image', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return response.data.url;
+};
+
 export const getMyCourses = async (): Promise<InstructorCourse[]> => {
   const response = await apiClient.get('/api/v1/courses/me');
   return response.data;

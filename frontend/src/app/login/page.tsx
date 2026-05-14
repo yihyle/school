@@ -23,8 +23,8 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
     try {
-      const user = await loginApi(email, password);
-      login(user);
+      const { accessToken, user } = await loginApi(email, password);
+      login(accessToken, user);
       router.replace('/');
     } catch {
       setError('이메일 또는 비밀번호가 올바르지 않습니다.');

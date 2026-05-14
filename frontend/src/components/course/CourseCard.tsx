@@ -24,13 +24,19 @@ export default function CourseCard({
     >
       {/* Thumbnail */}
       <div className={`relative aspect-video bg-gradient-to-br ${gradient} overflow-hidden rounded-2xl`}>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-2">
+        {course.thumbnailUrl ? (
+          <img
+            src={course.thumbnailUrl}
+            alt={course.title}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto">
               <span className="text-2xl font-bold text-white">{course.title.charAt(0)}</span>
             </div>
           </div>
-        </div>
+        )}
         {/* Level badge */}
         <div className="absolute top-3 left-3">
           <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${getLevelColor(course.level)}`}>

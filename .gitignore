@@ -27,3 +27,4 @@ frontend/.omc/
 .env
 .env.local
 *.log
+backend/uploads/

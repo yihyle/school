@@ -1,5 +1,6 @@
 package com.learnhub.user;
 
+import com.learnhub.user.dto.AuthResponse;
 import com.learnhub.user.dto.LoginRequest;
 import com.learnhub.user.dto.SignupRequest;
 import com.learnhub.user.dto.UserResponse;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,13 +23,22 @@ public class AuthController {
 
     @PostMapping("/signup")
     @Operation(summary = "회원가입")
-    public ResponseEntity<UserResponse> signup(@Valid @RequestBody SignupRequest request) {
+    public ResponseEntity<AuthResponse> signup(@Valid @RequestBody SignupRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.signup(request));
     }
 
     @PostMapping("/login")
     @Operation(summary = "로그인")
-    public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(userService.login(request));
+    }
+
+    @GetMapping("/me")
+    @Operation(summary = "내 정보 조회")
+    public ResponseEntity<UserResponse> me(@AuthenticationPrincipal Long userId) {
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(userService.getUser(userId));
     }
 }
