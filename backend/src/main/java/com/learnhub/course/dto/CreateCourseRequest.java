@@ -19,5 +19,4 @@ public class CreateCourseRequest {
     private String level;
 
     private Integer price;
-    private Boolean isPublished;
 }

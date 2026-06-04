@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>LearnHub · P2 발표자료</title>
+<style>
+@page { size: 297mm 167mm; margin: 0; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --pri: #1E40AF; --acc: #3B82F6; --bg: #F8FAFC; --sur: #FFFFFF;
+  --tx: #0F172A;  --mu: #64748B;  --ln: #E2E8F0; --la: #EFF6FF;
+  --gr: #059669;  --am: #D97706;  --pu: #7C3AED; --tl: #0F766E;
+}
+* { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; margin: 0; padding: 0; }
+html, body { background: #CBD5E1; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--tx); -webkit-font-smoothing: antialiased; }
+
+.slide { width: 297mm; height: 167mm; page-break-after: always; background: var(--sur); position: relative; overflow: hidden; display: flex; flex-direction: column; }
+.slide:last-child { page-break-after: auto; }
+.pg  { position: absolute; bottom: 6mm; right: 10mm; font-size: 6.5pt; color: var(--mu); font-weight: 500; letter-spacing: 0.08em; }
+.brn { position: absolute; top: 6.5mm; right: 10mm; font-size: 6.5pt; font-weight: 700; color: var(--acc); letter-spacing: 0.06em; }
+.inner { padding: 12mm 16mm 10mm; flex: 1; display: flex; flex-direction: column; }
+.sh { margin-bottom: 6mm; }
+.sh-ey { font-size: 6pt; font-weight: 600; color: var(--acc); text-transform: uppercase; letter-spacing: 0.16em; margin-bottom: 2mm; }
+.sh-ti { font-size: 19pt; font-weight: 700; color: var(--tx); letter-spacing: -0.03em; line-height: 1; }
+.sh-line { width: 8mm; height: 0.8mm; background: var(--acc); border-radius: 1mm; margin-top: 3mm; }
+
+/* ════ COVER ════ */
+.cover { background: #0F172A; }
+.cbar  { position: absolute; left: 0; top: 0; bottom: 0; width: 1.5mm; background: linear-gradient(to bottom, var(--acc), var(--pri)); }
+.cc    { padding: 0 22mm 0 22mm; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.ctag  { display: inline-flex; align-items: center; background: rgba(59,130,246,0.12); border: 0.3mm solid rgba(59,130,246,0.35); color: #93C5FD; font-size: 6.5pt; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 1.5mm 3mm; border-radius: 1mm; margin-bottom: 5mm; }
+.ctitle { font-size: 50pt; font-weight: 800; line-height: 1.0; color: #fff; margin-bottom: 4mm; letter-spacing: -0.04em; }
+.ctitle .ca { color: #60A5FA; }
+.csub  { font-size: 12pt; color: #94A3B8; font-weight: 400; line-height: 1.7; }
+.cfoot { border-top: 0.3mm solid rgba(255,255,255,0.07); padding: 4.5mm 22mm; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.cfoot .cf-l { font-size: 8pt; color: #475569; } .cfoot .cf-l strong { color: #94A3B8; font-weight: 600; }
+.cfoot .cf-r { font-size: 7.5pt; color: #60A5FA; font-family: monospace; }
+
+/* ════ AGENDA ════ */
+.agenda-parts { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5mm; flex: 1; align-content: center; }
+.ap { border-radius: 2mm; padding: 7mm 6mm; display: flex; flex-direction: column; justify-content: space-between; min-height: 55mm; }
+.ap.a { background: var(--pri); }
+.ap.b { background: var(--pu); }
+.ap.c { background: var(--tl); }
+.ap-num { font-size: 36pt; font-weight: 900; color: rgba(255,255,255,0.15); line-height: 1; letter-spacing: -0.05em; }
+.ap-label { font-size: 7pt; font-weight: 600; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 2mm; }
+.ap-title { font-size: 13pt; font-weight: 700; color: #fff; line-height: 1.3; letter-spacing: -0.02em; }
+
+/* ════ COMPARE ════ */
+.ctable { width: 100%; border-collapse: collapse; font-size: 8pt; flex: 1; }
+.ctable th { padding: 3mm 4mm; text-align: left; font-size: 7pt; font-weight: 600; letter-spacing: 0.04em; background: var(--tx); color: white; }
+.ctable td { padding: 2.8mm 4mm; border-bottom: 0.3mm solid var(--ln); vertical-align: middle; line-height: 1.4; }
+.ctable tr:nth-child(even) td { background: var(--bg); }
+.ctable tr:last-child td { border-bottom: none; }
+.td-cat { font-weight: 600; color: var(--tx); }
+.td-p1  { color: var(--mu); }
+.td-p2  { color: var(--pri); font-weight: 600; }
+
+/* ════ TECH STACK ════ */
+.stk { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4mm; flex: 1; }
+.sc  { background: var(--bg); border: 0.3mm solid var(--ln); border-radius: 1.5mm; overflow: hidden; display: flex; flex-direction: column; }
+.sc-hd { font-size: 8.5pt; font-weight: 700; color: #fff; padding: 3mm 4mm; letter-spacing: 0.02em; }
+.sc-hd.be { background: var(--pri); } .sc-hd.fe { background: var(--pu); } .sc-hd.db { background: var(--tl); }
+.sc-body { padding: 2mm 4mm; flex: 1; }
+.sc-row { display: flex; align-items: center; gap: 3mm; padding: 2.2mm 0; border-bottom: 0.3mm solid var(--ln); }
+.sc-row:last-child { border-bottom: none; }
+.sc-dot { width: 1.5mm; height: 1.5mm; border-radius: 50%; background: var(--ln); flex-shrink: 0; }
+.sc-name { font-size: 8.5pt; font-weight: 500; color: var(--tx); }
+
+/* ════ FEATURE ════ */
+.feat-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; flex: 1; }
+.fc { background: var(--bg); border: 0.3mm solid var(--ln); border-radius: 1.5mm; padding: 4.5mm; }
+.fc.accent { background: var(--la); border-color: #BFDBFE; }
+.fc-eyebrow { font-size: 6pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 1.5mm; }
+.fc-eyebrow.gr { color: var(--gr); } .fc-eyebrow.pu { color: var(--pu); }
+.fc-eyebrow.tl { color: var(--tl); } .fc-eyebrow.ac { color: var(--acc); }
+.fc-title { font-size: 9.5pt; font-weight: 700; color: var(--tx); margin-bottom: 2.5mm; }
+.fc-list { display: flex; flex-direction: column; gap: 1.5mm; }
+.fc-li { font-size: 7.5pt; color: var(--mu); line-height: 1.4; padding-left: 3mm; position: relative; }
+.fc-li::before { content: '—'; position: absolute; left: 0; color: var(--ln); }
+.role-table { width: 100%; border-collapse: collapse; font-size: 7.5pt; margin-top: 2mm; }
+.role-table th { background: var(--tx); color: #fff; padding: 2mm 3mm; text-align: left; font-size: 7pt; font-weight: 600; }
+.role-table td { padding: 2mm 3mm; border-bottom: 0.3mm solid var(--ln); }
+.role-table tr:nth-child(even) td { background: #fff; }
+.role-table tr:last-child td { border-bottom: none; }
+.ok { color: var(--gr); font-weight: 700; text-align: center; }
+.no { color: var(--ln); text-align: center; }
+
+/* ════ CHECKLIST ════ */
+.cl-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; flex: 1; align-content: start; }
+.cl-title  { font-size: 8pt; font-weight: 700; color: var(--tx); margin-bottom: 2.5mm; padding-bottom: 1.5mm; border-bottom: 0.5mm solid var(--ln); }
+.cl-item   { display: flex; align-items: center; gap: 2.5mm; padding: 1.8mm 0; border-bottom: 0.3mm solid var(--ln); font-size: 7.5pt; }
+.cl-item:last-child { border-bottom: none; }
+.ic-d { color: var(--gr); flex-shrink: 0; font-size: 8pt; } .ic-t { color: var(--am); flex-shrink: 0; font-size: 8pt; }
+.cl-done { color: var(--tx); } .cl-todo { color: var(--mu); }
+.cl-tag  { font-size: 5.5pt; font-weight: 600; color: var(--am); background: #FEF3C7; padding: 0.3mm 1.5mm; border-radius: 0.8mm; margin-left: auto; white-space: nowrap; }
+
+/* ════ GITHUB ════ */
+.gh-layout { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 5mm; flex: 1; }
+.gh-box    { background: var(--bg); border: 0.3mm solid var(--ln); border-radius: 1.5mm; padding: 5mm; }
+.gh-title  { font-size: 8.5pt; font-weight: 700; color: var(--pri); margin-bottom: 3mm; }
+.gh-url    { font-family: monospace; font-size: 9pt; font-weight: 600; color: var(--acc); background: var(--la); padding: 2.5mm 3mm; border-radius: 1.5mm; display: block; margin-bottom: 3.5mm; }
+.gh-pi     { display: flex; align-items: flex-start; gap: 2.5mm; padding: 2mm 0; border-bottom: 0.3mm solid var(--ln); }
+.gh-pi:last-child { border-bottom: none; }
+.gh-code   { font-family: monospace; color: var(--pri); font-size: 6pt; background: var(--la); padding: 0.3mm 1.5mm; border-radius: 0.8mm; white-space: nowrap; flex-shrink: 0; line-height: 1.9; }
+.gh-desc   { color: var(--mu); font-size: 7pt; line-height: 1.5; }
+.gh-right  { display: flex; flex-direction: column; gap: 3mm; }
+.gh-stat   { background: var(--la); border: 0.3mm solid #BFDBFE; border-radius: 1.5mm; padding: 4mm; flex: 1; }
+.gh-st     { font-size: 7pt; font-weight: 700; color: var(--pri); margin-bottom: 2.5mm; text-transform: uppercase; letter-spacing: 0.08em; }
+.gh-sr     { display: flex; justify-content: space-between; align-items: baseline; padding: 1.8mm 0; border-bottom: 0.3mm solid #BFDBFE; font-size: 7pt; gap: 3mm; }
+.gh-sr:last-child { border-bottom: none; }
+.gh-sr .k  { color: var(--mu); flex-shrink: 0; } .gh-sr .v  { color: var(--pri); font-weight: 600; font-family: monospace; font-size: 6pt; text-align: right; }
+</style>
+</head>
+<body>
+
+<!-- ══ 1: COVER ══ -->
+<div class="slide cover">
+  <div class="cbar"></div>
+  <div class="cc">
+    <div class="ctag">Project 2 · 2026.05</div>
+    <div class="ctitle">Learn<span class="ca">Hub</span></div>
+    <div class="csub">인증 · 권한 · 운영<br>JWT 기반 보안 아키텍처 &amp; 역할 분리 플랫폼</div>
+  </div>
+  <div class="cfoot">
+    <div class="cf-l"><strong>yihyle</strong> · Spring Boot + Next.js Full-Stack</div>
+    <div class="cf-r">github.com/yihyle/school</div>
+  </div>
+</div>
+
+<!-- ══ 2: AGENDA ══ -->
+<div class="slide">
+  <div class="brn">LearnHub P2</div>
+  <div class="inner">
+    <div class="sh">
+      <div class="sh-ey">Contents</div>
+      <div class="sh-ti">목차</div>
+      <div class="sh-line"></div>
+    </div>
+    <div class="agenda-parts">
+      <div class="ap a">
+        <div class="ap-num">01</div>
+        <div>
+          <div class="ap-label">Part 1</div>
+          <div class="ap-title">기술 스택</div>
+        </div>
+      </div>
+      <div class="ap b">
+        <div class="ap-num">02</div>
+        <div>
+          <div class="ap-label">Part 2</div>
+          <div class="ap-title">구현 기능</div>
+        </div>
+      </div>
+      <div class="ap c">
+        <div class="ap-num">03</div>
+        <div>
+          <div class="ap-label">Part 3</div>
+          <div class="ap-title">참조</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg">2 / 10</div>
+</div>
+
+<!-- ══ 3: P1→P2 ══ -->
+<div class="slide">
+  <div class="brn">LearnHub P2</div>
+  <div class="inner">
+    <div class="sh">
+      <div class="sh-ey">Part 1 — 기술 스택</div>
+      <div class="sh-ti">P1 → P2 핵심 변화</div>
+      <div class="sh-line"></div>
+    </div>
+    <table class="ctable" style="flex:1;">
+      <thead>
+        <tr>
+          <th style="width:20%">영역</th>
+          <th style="width:38%">P1</th>
+          <th style="width:42%">P2</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="td-cat">사용자 식별</td><td class="td-p1">userId = 1 하드코딩</td><td class="td-p2">JWT Access Token 기반 식별</td></tr>
+        <tr><td class="td-cat">인증 · 보안</td><td class="td-p1">없음</td><td class="td-p2">Spring Security + BCrypt 비밀번호 해싱</td></tr>
+        <tr><td class="td-cat">사용자 역할</td><td class="td-p1">없음</td><td class="td-p2">STUDENT / INSTRUCTOR 역할 분리</td></tr>
+        <tr><td class="td-cat">강의 관리</td><td class="td-p1">시드 데이터만 (수정 불가)</td><td class="td-p2">강사가 직접 등록 · 수정 · 삭제</td></tr>
+        <tr><td class="td-cat">학습 커뮤니티</td><td class="td-p1">없음</td><td class="td-p2">댓글 · 대댓글 · 좋아요</td></tr>
+        <tr><td class="td-cat">수강 신청</td><td class="td-p1">userId 파라미터 전달</td><td class="td-p2">토큰에서 사용자 자동 식별</td></tr>
+        <tr><td class="td-cat">회원 UI</td><td class="td-p1">없음</td><td class="td-p2">회원가입 · 로그인 · 역할 선택 페이지</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pg">3 / 10</div>
+</div>
+
+<!-- ══ 4: TECH STACK ══ -->
+<div class="slide">
+  <div class="brn">LearnHub P2</div>
+  <div class="inner">
+    <div class="sh">
+      <div class="sh-ey">Part 1 — 기술 스택</div>
+      <div class="sh-ti">기술 스택</div>
+      <div class="sh-line"></div>
+    </div>
+    <div class="stk">
+      <div class="sc">
+        <div class="sc-hd be">Backend</div>
+        <div class="sc-body">
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">Spring Boot</div></div>
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">Spring Security</div></div>
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">jjwt</div></div>
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">BCryptPasswordEncoder</div></div>
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">Spring Data JPA</div></div>
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">Flyway Migration</div></div>
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">MySQL 8</div></div>
+        </div>
+      </div>
+      <div class="sc">
+        <div class="sc-hd fe">Frontend</div>
+        <div class="sc-body">
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">Next.js (App Router)</div></div>
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">TypeScript</div></div>
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">Zustand Auth Store</div></div>
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">Axios Interceptor</div></div>
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">TailwindCSS</div></div>
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">Playwright (E2E)</div></div>
+        </div>
+      </div>
+      <div class="sc">
+        <div class="sc-hd db">Database &amp; Infra</div>
+        <div class="sc-body">
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">MySQL 8</div></div>
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">comment 테이블</div></div>
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">comment_like 테이블</div></div>
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">user.password BCrypt 해시</div></div>
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">user.role 실사용</div></div>
+          <div class="sc-row"><div class="sc-dot"></div><div class="sc-name">Docker Compose</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg">4 / 10</div>
+</div>
+
+<!-- ══ 5: 인증 · 회원 ══ -->
+<div class="slide">
+  <div class="brn">LearnHub P2</div>
+  <div class="inner">
+    <div class="sh">
+      <div class="sh-ey">Part 2 — 구현 기능 ①</div>
+      <div class="sh-ti">인증 · 회원 관리</div>
+      <div class="sh-line"></div>
+    </div>
+    <div class="feat-layout">
+      <div style="display:flex;flex-direction:column;gap:3mm;">
+        <div class="fc">
+          <div class="fc-eyebrow ac">회원가입</div>
+          <div class="fc-title">이메일 · 비밀번호 · 역할 선택</div>
+          <div class="fc-list">
+            <div class="fc-li">이메일 + 비밀번호 + 닉네임 입력</div>
+            <div class="fc-li">가입 시 학생 / 강사 역할 직접 선택</div>
+            <div class="fc-li">비밀번호 8자 이상 유효성 검증</div>
+            <div class="fc-li">이메일 중복 시 409 에러 처리</div>
+          </div>
+        </div>
+        <div class="fc">
+          <div class="fc-eyebrow ac">로그인 · 로그아웃</div>
+          <div class="fc-title">JWT 토큰 발급 및 상태 관리</div>
+          <div class="fc-list">
+            <div class="fc-li">로그인 성공 시 Access Token 발급 (1시간)</div>
+            <div class="fc-li">LocalStorage + Zustand로 로그인 상태 유지</div>
+            <div class="fc-li">모든 API 요청에 토큰 자동 첨부</div>
+            <div class="fc-li">토큰 만료 시 자동 로그아웃 처리</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:3mm;">
+        <div class="fc accent" style="flex:1;">
+          <div class="fc-eyebrow ac">역할별 접근 제어</div>
+          <div class="fc-title">STUDENT vs INSTRUCTOR 권한 분리</div>
+          <table class="role-table">
+            <thead><tr><th>기능</th><th style="text-align:center;">익명</th><th style="text-align:center;">학생</th><th style="text-align:center;">강사</th></tr></thead>
+            <tbody>
+              <tr><td>강의 탐색 · 상세</td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
+              <tr><td>수강 신청 · 진도</td><td class="no">—</td><td class="ok">✓</td><td class="no">—</td></tr>
+              <tr><td>댓글 작성 · 좋아요</td><td class="no">—</td><td class="ok">✓</td><td class="no">—</td></tr>
+              <tr><td>강의 등록 · 수정</td><td class="no">—</td><td class="no">—</td><td class="ok">✓</td></tr>
+              <tr><td>강사 대시보드</td><td class="no">—</td><td class="no">—</td><td class="ok">✓</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="background:var(--bg);border:0.3mm solid var(--ln);border-radius:1.5mm;padding:3.5mm;">
+          <div style="font-size:7pt;color:var(--mu);line-height:1.7;">
+            <strong style="color:var(--tx);display:block;margin-bottom:1mm;">헤더 역할 분기</strong>
+            강사 로그인 → 강사 대시보드 링크<br>
+            학생 로그인 → 내 강의실 · 대시보드 링크
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg">5 / 10</div>
+</div>
+
+<!-- ══ 6: 강의 탐색 · 수강 ══ -->
+<div class="slide">
+  <div class="brn">LearnHub P2</div>
+  <div class="inner">
+    <div class="sh">
+      <div class="sh-ey">Part 2 — 구현 기능 ②</div>
+      <div class="sh-ti">강의 탐색 · 수강 · 학습</div>
+      <div class="sh-line"></div>
+    </div>
+    <div class="feat-layout">
+      <div style="display:flex;flex-direction:column;gap:3mm;">
+        <div class="fc">
+          <div class="fc-eyebrow gr">강의 탐색</div>
+          <div class="fc-title">목록 조회 · 검색 · 필터</div>
+          <div class="fc-list">
+            <div class="fc-li">카테고리별 필터 (백엔드 · 프론트 · AI 등)</div>
+            <div class="fc-li">키워드 검색 (제목 · 설명)</div>
+            <div class="fc-li">인기 강의 (수강생 수 기준 정렬)</div>
+            <div class="fc-li">강의 상세 — 섹션 · 영상 목록 · 미리보기</div>
+          </div>
+        </div>
+        <div class="fc">
+          <div class="fc-eyebrow gr">수강 신청</div>
+          <div class="fc-title">JWT 기반 사용자 식별</div>
+          <div class="fc-list">
+            <div class="fc-li">강의 상세 페이지에서 수강 신청</div>
+            <div class="fc-li">동일 강의 중복 수강 방지</div>
+            <div class="fc-li">수강 취소 기능</div>
+            <div class="fc-li">내 강의실에서 수강 중 강의 전체 확인</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:3mm;">
+        <div class="fc">
+          <div class="fc-eyebrow gr">영상 시청 · 진도 관리</div>
+          <div class="fc-title">학습 진도 자동 저장</div>
+          <div class="fc-list">
+            <div class="fc-li">YouTube IFrame API 기반 영상 재생</div>
+            <div class="fc-li">시청 위치 (초 단위) 자동 저장</div>
+            <div class="fc-li">강의 영상 완료 처리</div>
+            <div class="fc-li">강의별 진도율 (%) 계산 · 표시</div>
+          </div>
+        </div>
+        <div class="fc accent" style="flex:1;">
+          <div class="fc-eyebrow ac">대시보드 · 내 강의실</div>
+          <div class="fc-title">학습 현황 한눈에 보기</div>
+          <div class="fc-list">
+            <div class="fc-li">전체 수강 강의 수 · 완료 강의 수</div>
+            <div class="fc-li">진행 중인 강의 카드 + 진도바</div>
+            <div class="fc-li">이어서 학습하기</div>
+            <div class="fc-li">평균 진도율 통계</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg">6 / 10</div>
+</div>
+
+<!-- ══ 7: 학습 커뮤니티 ══ -->
+<div class="slide">
+  <div class="brn">LearnHub P2</div>
+  <div class="inner">
+    <div class="sh">
+      <div class="sh-ey">Part 2 — 구현 기능 ③</div>
+      <div class="sh-ti">학습 커뮤니티 — 댓글 시스템</div>
+      <div class="sh-line"></div>
+    </div>
+    <div class="feat-layout">
+      <div style="display:flex;flex-direction:column;gap:3mm;">
+        <div class="fc">
+          <div class="fc-eyebrow pu">댓글 CRUD</div>
+          <div class="fc-title">강의 영상별 댓글 작성 · 관리</div>
+          <div class="fc-list">
+            <div class="fc-li">강의 영상 하단 댓글 작성 폼</div>
+            <div class="fc-li">댓글 목록 조회 (익명 사용자도 가능)</div>
+            <div class="fc-li">본인 댓글만 수정 · 삭제 가능</div>
+            <div class="fc-li">타인 댓글 수정 시도 시 403 반환</div>
+          </div>
+        </div>
+        <div class="fc">
+          <div class="fc-eyebrow pu">대댓글</div>
+          <div class="fc-title">1단계 대댓글 지원</div>
+          <div class="fc-list">
+            <div class="fc-li">댓글에 대한 답글 작성</div>
+            <div class="fc-li">부모 댓글 삭제 시 대댓글 함께 삭제</div>
+            <div class="fc-li">목록 조회 시 replies[] 트리 구조 반환</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:3mm;">
+        <div class="fc">
+          <div class="fc-eyebrow pu">좋아요</div>
+          <div class="fc-title">댓글 좋아요 · 취소 토글</div>
+          <div class="fc-list">
+            <div class="fc-li">좋아요 추가 · 취소 버튼</div>
+            <div class="fc-li">좋아요 수 실시간 카운트</div>
+            <div class="fc-li">동일 댓글 중복 좋아요 방지</div>
+          </div>
+        </div>
+        <div class="fc accent" style="flex:1;">
+          <div class="fc-eyebrow">DB 구조</div>
+          <div class="fc-title">comment · comment_like 신규 테이블</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:3mm;margin-top:2.5mm;">
+            <div style="background:white;border-radius:1mm;padding:3mm;border:0.3mm solid #BFDBFE;">
+              <div style="font-size:7pt;font-weight:700;color:var(--pri);margin-bottom:1.5mm;">comment</div>
+              <div style="font-size:6.5pt;color:var(--mu);line-height:1.9;">id · lecture_id<br>user_id · parent_id<br>content · created_at</div>
+            </div>
+            <div style="background:white;border-radius:1mm;padding:3mm;border:0.3mm solid #BFDBFE;">
+              <div style="font-size:7pt;font-weight:700;color:var(--acc);margin-bottom:1.5mm;">comment_like</div>
+              <div style="font-size:6.5pt;color:var(--mu);line-height:1.9;">id · comment_id<br>user_id · created_at<br>UNIQUE(comment, user)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg">7 / 10</div>
+</div>
+
+<!-- ══ 8: 강사 운영 ══ -->
+<div class="slide">
+  <div class="brn">LearnHub P2</div>
+  <div class="inner">
+    <div class="sh">
+      <div class="sh-ey">Part 2 — 구현 기능 ④</div>
+      <div class="sh-ti">강사 운영 — 강의 등록 · 관리</div>
+      <div class="sh-line"></div>
+    </div>
+    <div class="feat-layout">
+      <div style="display:flex;flex-direction:column;gap:3mm;">
+        <div class="fc">
+          <div class="fc-eyebrow tl">강의 등록</div>
+          <div class="fc-title">강사가 직접 강의 생성</div>
+          <div class="fc-list">
+            <div class="fc-li">강사 대시보드 (/instructor) 전용 페이지</div>
+            <div class="fc-li">제목 · 설명 · 카테고리 · 난이도 입력 폼</div>
+            <div class="fc-li">즉시 공개 / 비공개 선택</div>
+            <div class="fc-li">INSTRUCTOR 역할만 접근 가능</div>
+          </div>
+        </div>
+        <div class="fc">
+          <div class="fc-eyebrow tl">강의 수정 · 삭제</div>
+          <div class="fc-title">본인 강의만 편집 가능</div>
+          <div class="fc-list">
+            <div class="fc-li">강의 정보 부분 수정 (PATCH)</div>
+            <div class="fc-li">강의 삭제 — 소유권 검증</div>
+            <div class="fc-li">타인 강의 수정 시도 시 403 반환</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:3mm;">
+        <div class="fc">
+          <div class="fc-eyebrow tl">섹션 · 영상 추가</div>
+          <div class="fc-title">강의 콘텐츠 구성</div>
+          <div class="fc-list">
+            <div class="fc-li">강의에 섹션 추가 (순서 자동 지정)</div>
+            <div class="fc-li">섹션에 영상 추가 (제목 · YouTube URL)</div>
+            <div class="fc-li">미리보기 영상 설정</div>
+          </div>
+        </div>
+        <div class="fc accent" style="flex:1;">
+          <div class="fc-eyebrow">강사 대시보드</div>
+          <div class="fc-title">내 강의 한눈에 관리</div>
+          <div class="fc-list">
+            <div class="fc-li">등록한 강의 목록 (수강생 수 표시)</div>
+            <div class="fc-li">공개 / 비공개 상태 배지</div>
+            <div class="fc-li">섹션 추가 버튼 (모달 UI)</div>
+            <div class="fc-li">강의 삭제 버튼</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg">8 / 10</div>
+</div>
+
+<!-- ══ 9: GITHUB ══ -->
+<div class="slide">
+  <div class="brn">LearnHub P2</div>
+  <div class="inner">
+    <div class="sh">
+      <div class="sh-ey">Part 3 — 참조</div>
+      <div class="sh-ti">GitHub &amp; 참조 안내</div>
+      <div class="sh-line"></div>
+    </div>
+    <div class="gh-layout">
+      <div class="gh-box">
+        <div class="gh-title">Repository</div>
+        <div class="gh-url">github.com/yihyle/school</div>
+        <div style="font-size:7.5pt;font-weight:700;color:var(--tx);margin-bottom:2mm;">P2 문서</div>
+        <div class="gh-pi"><span class="gh-code">docs/P2.md</span><span class="gh-desc">기획서 · 개발계획 · 요구사항 · ERD · API 명세 전체</span></div>
+        <div class="gh-pi"><span class="gh-code">docs/p2/auth-spec.md</span><span class="gh-desc">토큰 · 헤더 · 에러 응답 규격</span></div>
+        <div class="gh-pi"><span class="gh-code">docs/p2/e2e-cases.md</span><span class="gh-desc">E2E 테스트 케이스 목록</span></div>
+        <div class="gh-pi"><span class="gh-code">docs/일지_p2_week1~3.html</span><span class="gh-desc">주차별 개발 일지</span></div>
+        <div class="gh-pi"><span class="gh-code">docs/P2-발표자료.pdf</span><span class="gh-desc">본 발표 자료</span></div>
+      </div>
+      <div class="gh-right">
+        <div class="gh-stat">
+          <div class="gh-st">P2 핵심 코드 위치</div>
+          <div class="gh-sr"><span class="k">JWT · 인증 필터</span><span class="v">backend/.../auth/</span></div>
+          <div class="gh-sr"><span class="k">Security 설정</span><span class="v">backend/.../config/SecurityConfig.java</span></div>
+          <div class="gh-sr"><span class="k">Auth API</span><span class="v">backend/.../user/AuthController.java</span></div>
+          <div class="gh-sr"><span class="k">강사 강의 관리</span><span class="v">backend/.../course/CourseService.java</span></div>
+          <div class="gh-sr"><span class="k">댓글 백엔드</span><span class="v">backend/.../comment/</span></div>
+          <div class="gh-sr"><span class="k">강사 대시보드</span><span class="v">frontend/src/app/instructor/page.tsx</span></div>
+          <div class="gh-sr"><span class="k">인증 상태 관리</span><span class="v">frontend/src/stores/useAuthStore.ts</span></div>
+        </div>
+        <div style="background:var(--bg);border:0.3mm solid var(--ln);border-radius:1.5mm;padding:3.5mm;">
+          <div style="font-size:7pt;font-weight:700;color:var(--tx);margin-bottom:1.5mm;">개발 환경 설정</div>
+          <div style="font-size:7pt;color:var(--mu);line-height:1.6;">docs/개발환경설정.md<br>submit/개발환경설정.md</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg">9 / 9</div>
+</div>
+
+</body>
+</html>

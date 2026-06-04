@@ -10,6 +10,16 @@ export const uploadThumbnail = async (file: File): Promise<string> => {
   return response.data.url;
 };
 
+export const uploadVideo = async (file: File): Promise<string> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const response = await apiClient.post<{ url: string }>('/api/v1/upload/video', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 600000,
+  });
+  return response.data.url;
+};
+
 export const getMyCourses = async (): Promise<InstructorCourse[]> => {
   const response = await apiClient.get('/api/v1/courses/me');
   return response.data;

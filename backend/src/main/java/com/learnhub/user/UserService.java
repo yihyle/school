@@ -5,6 +5,8 @@ import com.learnhub.common.exception.DuplicateResourceException;
 import com.learnhub.common.exception.ResourceNotFoundException;
 import com.learnhub.enrollment.Enrollment;
 import com.learnhub.enrollment.EnrollmentRepository;
+import com.learnhub.notification.NotificationService;
+import com.learnhub.notification.NotificationType;
 import com.learnhub.user.dto.AuthResponse;
 import com.learnhub.user.dto.DashboardResponse;
 import com.learnhub.user.dto.LoginRequest;
@@ -29,6 +31,7 @@ public class UserService {
     private final EnrollmentRepository enrollmentRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final NotificationService notificationService;
 
     @Transactional
     public AuthResponse signup(SignupRequest request) {
@@ -44,6 +47,13 @@ public class UserService {
                 .role(role)
                 .build();
         User saved = userRepository.save(user);
+
+        // 운영자 알림: 신규 가입 (특히 강사 가입 모니터링)
+        notificationService.enqueue(null, NotificationType.OPS_ALERT, "🙋 신규 회원 가입",
+                String.format("%s (%s) 님이 %s 로 가입했습니다.",
+                        saved.getNickname(), saved.getEmail(), saved.getRole()),
+                "signup:" + saved.getId());
+
         String token = jwtTokenProvider.createToken(saved.getId(), saved.getRole());
         return AuthResponse.builder()
                 .accessToken(token)
@@ -58,6 +68,9 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 올바르지 않습니다"));
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 올바르지 않습니다");
+        }
+        if (Boolean.FALSE.equals(user.getIsActive())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "비활성화된 계정입니다. 관리자에게 문의하세요.");
         }
         String token = jwtTokenProvider.createToken(user.getId(), user.getRole());
         return AuthResponse.builder()

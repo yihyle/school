@@ -18,6 +18,9 @@ public class CommentResponse {
     private String userNickname;
     private String userProfileImage;
     private String content;
+    private String type;
+    private boolean resolved;
+    private String userRole;
     private long likeCount;
     private boolean likedByMe;
     private boolean editable;

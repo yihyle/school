@@ -99,9 +99,19 @@ export default function Header() {
                   <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 overflow-hidden">
                     <div className="px-4 py-2.5 border-b border-gray-100">
                       <p className="text-sm font-semibold text-[#222222]">{user.nickname}</p>
-                      <p className="text-xs text-[#717171] mt-0.5">{user.role === 'INSTRUCTOR' ? '강사' : '학습자'}</p>
+                      <p className="text-xs text-[#717171] mt-0.5">
+                        {user.role === 'ADMIN' ? '관리자' : user.role === 'INSTRUCTOR' ? '강사' : '학습자'}
+                      </p>
                     </div>
-                    {user.role === 'INSTRUCTOR' ? (
+                    {user.role === 'ADMIN' ? (
+                      <Link
+                        href="/admin"
+                        onClick={() => setDropdownOpen(false)}
+                        className="block px-4 py-2.5 text-sm text-red-600 font-medium hover:bg-red-50 transition-colors"
+                      >
+                        관리자 페이지
+                      </Link>
+                    ) : user.role === 'INSTRUCTOR' ? (
                       <Link
                         href="/instructor"
                         onClick={() => setDropdownOpen(false)}
@@ -196,7 +206,9 @@ export default function Header() {
           <div className="max-w-7xl mx-auto px-4 space-y-1">
             <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-[#222222] hover:bg-gray-50 rounded-xl">홈</Link>
             <Link href="/courses" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-[#222222] hover:bg-gray-50 rounded-xl">강의</Link>
-            {isLoggedIn && user?.role === 'INSTRUCTOR' ? (
+            {isLoggedIn && user?.role === 'ADMIN' ? (
+              <Link href="/admin" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl">관리자 페이지</Link>
+            ) : isLoggedIn && user?.role === 'INSTRUCTOR' ? (
               <Link href="/instructor" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2.5 text-sm font-medium text-[#222222] hover:bg-gray-50 rounded-xl">강사 대시보드</Link>
             ) : (
               <>

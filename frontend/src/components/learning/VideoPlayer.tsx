@@ -5,6 +5,7 @@ import type { Lecture } from '@/types';
 import { saveProgress, completeLecture } from '@/lib/api/progress';
 import { usePlayerStore } from '@/stores/usePlayerStore';
 import { useAuthStore } from '@/stores/useAuthStore';
+import HtmlVideoPlayer from './HtmlVideoPlayer';
 
 const SAVE_INTERVAL_MS = 10_000;
 const COMPLETE_THRESHOLD = 0.9;
@@ -36,7 +37,8 @@ export default function VideoPlayer({ lecture, onLectureComplete, onEnded }: Vid
   const { setIsPlaying, setPlayedSeconds, setDuration, markLectureCompleted } = usePlayerStore();
   const { user } = useAuthStore();
 
-  const videoId = getYouTubeId(lecture.videoUrl);
+  const videoId = lecture.videoUrl ? getYouTubeId(lecture.videoUrl) : null;
+  const isYouTube = videoId !== null;
 
   // Load YouTube IFrame API
   useEffect(() => {
@@ -148,14 +150,17 @@ export default function VideoPlayer({ lecture, onLectureComplete, onEnded }: Vid
     };
   }, [lecture.id, user?.id, markLectureCompleted, onLectureComplete, setPlayedSeconds]);
 
-  if (!videoId) {
-    return (
-      <div className="w-full bg-black">
-        <div className="relative aspect-video flex items-center justify-center">
-          <p className="text-white">지원하지 않는 영상 URL입니다.</p>
+  if (!isYouTube) {
+    if (!lecture.videoUrl) {
+      return (
+        <div className="w-full bg-black">
+          <div className="relative aspect-video flex items-center justify-center">
+            <p className="text-white">영상이 등록되지 않았습니다.</p>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+    return <HtmlVideoPlayer lecture={lecture} onLectureComplete={onLectureComplete} onEnded={onEnded} />;
   }
 
   return (

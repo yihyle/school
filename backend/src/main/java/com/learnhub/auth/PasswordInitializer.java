@@ -1,5 +1,6 @@
 package com.learnhub.auth;
 
+import com.learnhub.user.User;
 import com.learnhub.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -15,11 +16,20 @@ public class PasswordInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        userRepository.findAll().stream()
-                .filter(u -> u.getPassword().startsWith("$2a$10$dummy"))
-                .forEach(u -> {
-                    u.setPassword(passwordEncoder.encode("password123"));
-                    userRepository.save(u);
-                });
+        userRepository.findAll().forEach(u -> {
+            if (u.getPassword() == null) return;
+
+            if ("admin@learnhub.io".equals(u.getEmail())
+                    && u.getPassword().startsWith("$2a$10$dummy_admin")) {
+                u.setPassword(passwordEncoder.encode("admin1234"));
+                userRepository.save(u);
+                return;
+            }
+
+            if (u.getPassword().startsWith("$2a$10$dummy")) {
+                u.setPassword(passwordEncoder.encode("password123"));
+                userRepository.save(u);
+            }
+        });
     }
 }

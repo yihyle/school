@@ -9,4 +9,5 @@ public class CreateCommentRequest {
     private Long userId;
     private String content;
     private Long parentId;
+    private String type;
 }

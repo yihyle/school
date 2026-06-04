@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/useAuthStore';
 import type { InstructorCourse, CreateCourseRequest, Section } from '@/types';
-import { getMyCourses, createCourse, deleteCourse, addSection, addLecture, uploadThumbnail } from '@/lib/api/instructor';
+import { getMyCourses, createCourse, deleteCourse, addSection, addLecture, uploadThumbnail, uploadVideo } from '@/lib/api/instructor';
 import { getCourseDetail } from '@/lib/api/courses';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 
@@ -17,7 +17,7 @@ const CAT_LABEL: Record<string, string> = {
 };
 
 const empty: CreateCourseRequest = {
-  title: '', description: '', thumbnailUrl: '', category: 'BACKEND', level: 'BEGINNER', price: 0, isPublished: false,
+  title: '', description: '', thumbnailUrl: '', category: 'BACKEND', level: 'BEGINNER', price: 0,
 };
 
 export default function InstructorPage() {
@@ -32,6 +32,8 @@ export default function InstructorPage() {
   const [error, setError] = useState<string | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [thumbnailUploading, setThumbnailUploading] = useState(false);
+  const [videoUploading, setVideoUploading] = useState(false);
+  const [videoFileName, setVideoFileName] = useState<string | null>(null);
 
   // 섹션 펼치기
   const [expandedId, setExpandedId] = useState<number | null>(null);
@@ -41,7 +43,7 @@ export default function InstructorPage() {
   // 모달
   const [sectionModal, setSectionModal] = useState<{ courseId: number; title: string } | null>(null);
   const [lectureModal, setLectureModal] = useState<{
-    sectionId: number; courseId: number; title: string; videoUrl: string; duration: string;
+    sectionId: number; courseId: number; title: string; videoUrl: string;
   } | null>(null);
 
   useEffect(() => {
@@ -77,6 +79,22 @@ export default function InstructorPage() {
     if (expandedId === courseId) { setExpandedId(null); return; }
     setExpandedId(courseId);
     if (!sectionsMap[courseId]) await fetchSections(courseId);
+  };
+
+  const handleVideoFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !lectureModal) return;
+    setVideoUploading(true);
+    setVideoFileName(file.name);
+    try {
+      const url = await uploadVideo(file);
+      setLectureModal({ ...lectureModal, videoUrl: url });
+    } catch {
+      alert('영상 업로드에 실패했습니다.');
+      setVideoFileName(null);
+    } finally {
+      setVideoUploading(false);
+    }
   };
 
   const handleThumbnailFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -143,10 +161,10 @@ export default function InstructorPage() {
       await addLecture(lectureModal.sectionId, {
         title: lectureModal.title,
         videoUrl: lectureModal.videoUrl || undefined,
-        duration: lectureModal.duration ? parseInt(lectureModal.duration) : undefined,
       });
       const courseId = lectureModal.courseId;
       setLectureModal(null);
+      setVideoFileName(null);
       await fetchSections(courseId);
     } catch {
       alert('영상 추가에 실패했습니다.');
@@ -232,12 +250,6 @@ export default function InstructorPage() {
                 placeholder="강의 소개를 입력하세요" />
             </div>
           </div>
-          <label className="flex items-center gap-2 text-sm text-[#222222]">
-            <input type="checkbox" checked={form.isPublished ?? false}
-              onChange={(e) => setForm({ ...form, isPublished: e.target.checked })}
-              className="w-4 h-4 rounded" />
-            즉시 공개
-          </label>
           <div className="flex gap-3">
             <button type="submit" disabled={submitting}
               className="px-6 py-2.5 bg-[#3B82F6] text-white text-sm font-semibold rounded-xl hover:bg-[#1E40AF] transition-colors disabled:opacity-50">
@@ -270,9 +282,6 @@ export default function InstructorPage() {
                       <span className="text-xs font-medium text-[#717171]">{CAT_LABEL[course.category] ?? course.category}</span>
                       <span className="text-xs text-[#EBEBEB]">·</span>
                       <span className="text-xs font-medium text-[#717171]">{LEVEL_LABEL[course.level] ?? course.level}</span>
-                      {course.isPublished
-                        ? <span className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">공개</span>
-                        : <span className="text-xs font-semibold text-[#717171] bg-[#F7F7F7] px-2 py-0.5 rounded-full">비공개</span>}
                     </div>
                     <h3 className="text-base font-bold text-[#222222] mb-1">{course.title}</h3>
                     {course.description && <p className="text-sm text-[#717171] line-clamp-1">{course.description}</p>}
@@ -317,7 +326,7 @@ export default function InstructorPage() {
                               <span className="text-[#717171] mr-2">#{idx + 1}</span>{section.title}
                             </h4>
                             <button
-                              onClick={() => setLectureModal({ sectionId: section.id, courseId: course.id, title: '', videoUrl: '', duration: '' })}
+                              onClick={() => setLectureModal({ sectionId: section.id, courseId: course.id, title: '', videoUrl: '' })}
                               className="text-xs font-semibold text-white bg-[#3B82F6] px-3 py-1.5 rounded-lg hover:bg-[#1E40AF] transition-colors"
                             >
                               + 영상 추가
@@ -394,25 +403,30 @@ export default function InstructorPage() {
                 <label className="block text-sm font-medium text-[#222222] mb-1">YouTube URL</label>
                 <input
                   value={lectureModal.videoUrl}
-                  onChange={(e) => setLectureModal({ ...lectureModal, videoUrl: e.target.value })}
+                  onChange={(e) => { setLectureModal({ ...lectureModal, videoUrl: e.target.value }); setVideoFileName(null); }}
                   className="w-full px-4 py-2.5 border border-[#EBEBEB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6]"
                   placeholder="https://www.youtube.com/watch?v=..."
+                  disabled={videoUploading}
                 />
               </div>
+              <div className="flex items-center gap-3 text-xs text-[#717171]">
+                <div className="flex-1 h-px bg-[#EBEBEB]" />
+                <span>또는</span>
+                <div className="flex-1 h-px bg-[#EBEBEB]" />
+              </div>
               <div>
-                <label className="block text-sm font-medium text-[#222222] mb-1">영상 길이 (초)</label>
-                <input
-                  type="number" min="0"
-                  value={lectureModal.duration}
-                  onChange={(e) => setLectureModal({ ...lectureModal, duration: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-[#EBEBEB] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#3B82F6]"
-                  placeholder="예: 600 (10분)"
-                />
+                <label className="block text-sm font-medium text-[#222222] mb-1">로컬 영상 파일 업로드</label>
+                <label className="flex flex-col items-center justify-center w-full py-3 border-2 border-dashed border-[#EBEBEB] rounded-xl cursor-pointer hover:border-[#3B82F6] transition-colors bg-white">
+                  <span className="text-xs text-[#717171] px-2 text-center">
+                    {videoUploading ? '업로드 중...' : videoFileName ? `✓ ${videoFileName}` : '영상 파일 선택 (mp4, webm 등)'}
+                  </span>
+                  <input type="file" accept="video/*" className="hidden" onChange={handleVideoFile} disabled={videoUploading} />
+                </label>
               </div>
             </div>
             <div className="flex gap-3 mt-4">
               <button type="submit" className="flex-1 py-2.5 bg-[#3B82F6] text-white text-sm font-semibold rounded-xl hover:bg-[#1E40AF] transition-colors">추가</button>
-              <button type="button" onClick={() => setLectureModal(null)} className="flex-1 py-2.5 bg-[#F7F7F7] text-[#717171] text-sm font-medium rounded-xl hover:bg-[#EBEBEB] transition-colors">취소</button>
+              <button type="button" onClick={() => { setLectureModal(null); setVideoFileName(null); }} className="flex-1 py-2.5 bg-[#F7F7F7] text-[#717171] text-sm font-medium rounded-xl hover:bg-[#EBEBEB] transition-colors">취소</button>
             </div>
           </form>
         </div>

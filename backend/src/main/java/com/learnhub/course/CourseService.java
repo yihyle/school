@@ -73,7 +73,7 @@ public class CourseService {
                 .category(request.getCategory())
                 .level(request.getLevel())
                 .price(request.getPrice() != null ? request.getPrice() : 0)
-                .isPublished(Boolean.TRUE.equals(request.getIsPublished()))
+                .isPublished(true)
                 .instructor(instructor)
                 .build();
 
@@ -95,7 +95,6 @@ public class CourseService {
         if (request.getCategory() != null) course.setCategory(request.getCategory());
         if (request.getLevel() != null) course.setLevel(request.getLevel());
         if (request.getPrice() != null) course.setPrice(request.getPrice());
-        if (request.getIsPublished() != null) course.setIsPublished(request.getIsPublished());
 
         return InstructorCourseResponse.from(courseRepository.save(course));
     }

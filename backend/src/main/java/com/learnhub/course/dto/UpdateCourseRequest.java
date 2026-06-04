@@ -10,5 +10,4 @@ public class UpdateCourseRequest {
     private String category;
     private String level;
     private Integer price;
-    private Boolean isPublished;
 }

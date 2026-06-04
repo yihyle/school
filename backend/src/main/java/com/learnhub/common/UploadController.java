@@ -40,4 +40,29 @@ public class UploadController {
         String url = baseUrl + "/uploads/thumbnails/" + filename;
         return ResponseEntity.ok(Map.of("url", url));
     }
+
+    @PostMapping("/video")
+    public ResponseEntity<Map<String, String>> uploadVideo(
+            @RequestParam("file") MultipartFile file,
+            HttpServletRequest request) throws IOException {
+
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("video/")) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        String original = file.getOriginalFilename();
+        String ext = (original != null && original.contains("."))
+                ? original.substring(original.lastIndexOf('.') + 1)
+                : "mp4";
+
+        String filename = UUID.randomUUID() + "." + ext;
+        Path dir = Paths.get(uploadDir, "videos");
+        Files.createDirectories(dir);
+        Files.copy(file.getInputStream(), dir.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
+
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        String url = baseUrl + "/uploads/videos/" + filename;
+        return ResponseEntity.ok(Map.of("url", url));
+    }
 }

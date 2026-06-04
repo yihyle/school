@@ -41,6 +41,14 @@ public class Comment {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(nullable = false, length = 20)
+    @Builder.Default
+    private String type = "GENERAL";
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean resolved = false;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 

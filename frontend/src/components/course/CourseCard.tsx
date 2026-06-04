@@ -29,6 +29,7 @@ export default function CourseCard({
             src={course.thumbnailUrl}
             alt={course.title}
             className="absolute inset-0 w-full h-full object-cover"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center">

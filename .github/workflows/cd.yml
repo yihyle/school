@@ -1,0 +1,48 @@
+name: CD
+
+# main 에 푸시되면(또는 수동 실행) 서버로 배포한다.
+# 필요한 Repository Secrets:
+#   DEPLOY_HOST, DEPLOY_USER, DEPLOY_SSH_KEY  — 배포 서버 SSH 접속 정보
+# 서버에는 docker / docker compose 와 이 저장소 체크아웃(또는 compose 파일)이 있어야 한다.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy (docker compose)
+    runs-on: ubuntu-latest
+    # 배포 시크릿이 설정된 경우에만 실행
+    if: ${{ github.ref == 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check deploy secrets
+        id: check
+        run: |
+          if [ -n "${{ secrets.DEPLOY_HOST }}" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::DEPLOY_HOST 미설정 → 배포를 건너뜁니다. (Settings > Secrets 에 배포 정보 등록 필요)"
+          fi
+
+      - name: Deploy over SSH
+        if: steps.check.outputs.ready == 'true'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            cd ~/ug2026
+            git pull origin main
+            docker compose -f docker-compose.prod.yml pull || true
+            docker compose -f docker-compose.prod.yml up -d --build
+            docker image prune -f

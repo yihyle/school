@@ -102,7 +102,6 @@ export interface InstructorCourse {
   category: string;
   level: string;
   price: number;
-  isPublished: boolean;
   enrollmentCount: number;
   createdAt: string;
 }
@@ -114,7 +113,57 @@ export interface CreateCourseRequest {
   category: string;
   level: string;
   price?: number;
-  isPublished?: boolean;
+}
+
+// ─── Admin ────────────────────────────────────────────────────────────────────
+
+export interface AdminStats {
+  totalUsers: number;
+  totalStudents: number;
+  totalInstructors: number;
+  totalCourses: number;
+  publishedCourses: number;
+  totalEnrollments: number;
+  totalComments: number;
+  totalQuestions: number;
+  unresolvedQuestions: number;
+  usersByRole: Record<string, number>;
+  coursesByCategory: Record<string, number>;
+  recentUsers: Array<{
+    id: number;
+    email: string;
+    nickname: string;
+    role: string;
+    createdAt: string;
+  }>;
+  topCourses: Array<{
+    id: number;
+    title: string;
+    instructorNickname: string;
+    enrollmentCount: number;
+  }>;
+}
+
+export interface AdminUser {
+  id: number;
+  email: string;
+  nickname: string;
+  role: string;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface AdminCourse {
+  id: number;
+  title: string;
+  category: string;
+  level: string;
+  instructorNickname: string;
+  instructorId: number;
+  price: number;
+  isPublished: boolean;
+  enrollmentCount: number;
+  createdAt: string;
 }
 
 // ─── Progress ────────────────────────────────────────────────────────────────

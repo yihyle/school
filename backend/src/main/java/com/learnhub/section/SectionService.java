@@ -6,9 +6,13 @@ import com.learnhub.course.CourseRepository;
 import com.learnhub.lecture.Lecture;
 import com.learnhub.lecture.LectureRepository;
 import com.learnhub.lecture.dto.LectureResponse;
+import com.learnhub.notification.NotificationService;
+import com.learnhub.notification.NotificationType;
 import com.learnhub.section.dto.CreateLectureRequest;
 import com.learnhub.section.dto.CreateSectionRequest;
 import com.learnhub.section.dto.SectionResponse;
+import com.learnhub.subscription.Subscription;
+import com.learnhub.subscription.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,6 +29,8 @@ public class SectionService {
     private final SectionRepository sectionRepository;
     private final CourseRepository courseRepository;
     private final LectureRepository lectureRepository;
+    private final SubscriptionRepository subscriptionRepository;
+    private final NotificationService notificationService;
 
     public SectionResponse addSection(Long instructorId, Long courseId, CreateSectionRequest request) {
         Course course = courseRepository.findById(courseId)
@@ -66,6 +72,22 @@ public class SectionService {
                 .isPreview(Boolean.TRUE.equals(request.getIsPreview()))
                 .build();
 
-        return LectureResponse.from(lectureRepository.save(lecture));
+        Lecture saved = lectureRepository.save(lecture);
+        notifySubscribers(section.getCourse(), saved);
+        return LectureResponse.from(saved);
+    }
+
+    /** 새 영상 등록 시 해당 강의 구독자에게 알림을 적재한다(아웃박스). */
+    private void notifySubscribers(Course course, Lecture lecture) {
+        List<Subscription> subscribers = subscriptionRepository.findByCourseId(course.getId());
+        for (Subscription sub : subscribers) {
+            notificationService.enqueue(
+                    sub.getUserId(),
+                    NotificationType.NEW_LECTURE,
+                    "🆕 새 강의 영상",
+                    String.format("'%s' 강의에 새 영상 '%s' 이(가) 등록되었습니다.",
+                            course.getTitle(), lecture.getTitle()),
+                    "new-lecture:" + lecture.getId() + ":" + sub.getUserId());
+        }
     }
 }

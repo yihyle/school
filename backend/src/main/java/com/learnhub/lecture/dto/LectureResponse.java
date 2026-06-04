@@ -1,6 +1,7 @@
 package com.learnhub.lecture.dto;
 
 import com.learnhub.lecture.Lecture;
+import com.learnhub.progress.LectureProgress;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,8 +16,14 @@ public class LectureResponse {
     private Integer duration;
     private int sortOrder;
     private boolean isPreview;
+    private Integer lastPosition;
+    private boolean completed;
 
     public static LectureResponse from(Lecture lecture) {
+        return from(lecture, null);
+    }
+
+    public static LectureResponse from(Lecture lecture, LectureProgress progress) {
         return LectureResponse.builder()
                 .id(lecture.getId())
                 .sectionId(lecture.getSection() != null ? lecture.getSection().getId() : null)
@@ -25,6 +32,8 @@ public class LectureResponse {
                 .duration(lecture.getDuration())
                 .sortOrder(lecture.getSortOrder())
                 .isPreview(lecture.isPreview())
+                .lastPosition(progress != null ? progress.getLastPosition() : null)
+                .completed(progress != null && progress.isCompleted())
                 .build();
     }
 }

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,8 +23,10 @@ public class LectureController {
 
     @GetMapping("/{lectureId}")
     @Operation(summary = "강의 상세 조회")
-    public ResponseEntity<LectureResponse> getLecture(@PathVariable Long lectureId) {
-        return ResponseEntity.ok(lectureService.getLecture(lectureId));
+    public ResponseEntity<LectureResponse> getLecture(
+            @PathVariable Long lectureId,
+            @AuthenticationPrincipal Long userId) {
+        return ResponseEntity.ok(lectureService.getLecture(lectureId, userId));
     }
 
     @PatchMapping("/{lectureId}/progress")
