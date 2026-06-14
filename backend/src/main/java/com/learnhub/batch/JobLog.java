@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 /** 스케줄러 배치 실행 로그. job_key 유일 제약으로 동일 실행의 중복 수행을 막는다(멱등성). */
 @Entity
-@Table(name = "job_log")
+@Table(name = "job_log", uniqueConstraints = @UniqueConstraint(name = "uk_job_log_job_key", columnNames = "job_key"))
 @Getter
 @Setter
 @NoArgsConstructor

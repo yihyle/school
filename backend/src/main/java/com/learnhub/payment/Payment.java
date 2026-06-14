@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 /** 강의 결제. order_id 유일 제약으로 멱등성(중복 승인 방지)을 보장한다. */
 @Entity
-@Table(name = "payment")
+@Table(name = "payment", uniqueConstraints = @UniqueConstraint(name = "uk_payment_order_id", columnNames = "order_id"))
 @Getter
 @Setter
 @NoArgsConstructor

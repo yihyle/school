@@ -66,6 +66,12 @@ export default function CourseDetailPage(props: PageProps<'/courses/[courseId]'>
     if (firstLecture) router.push(`/learn/${courseId}/${firstLecture.id}`);
   };
 
+  const handlePurchase = () => {
+    if (!courseId) return;
+    if (!user) { router.push('/login'); return; }
+    router.push(`/payments/checkout?courseId=${courseId}`);
+  };
+
   if (loading) return <LoadingSpinner fullScreen />;
 
   if (error || !course) {
@@ -161,13 +167,22 @@ export default function CourseDetailPage(props: PageProps<'/courses/[courseId]'>
                   </div>
                 </div>
                 <div className="p-5">
-                  <p className="text-lg font-bold text-[#3B82F6] mb-5">무료 강의</p>
+                  <p className="text-lg font-bold text-[#3B82F6] mb-5">
+                    {course.price > 0 ? formatPrice(course.price) : '무료 강의'}
+                  </p>
                   {isEnrolled ? (
                     <button
                       onClick={handleContinue}
                       className="w-full py-3.5 bg-[#222222] text-white font-semibold rounded-xl hover:bg-[#3B82F6] transition-colors duration-200"
                     >
                       학습 계속하기
+                    </button>
+                  ) : course.price > 0 ? (
+                    <button
+                      onClick={handlePurchase}
+                      className="w-full py-3.5 bg-[#3B82F6] text-white font-semibold rounded-xl hover:bg-blue-600 transition-colors"
+                    >
+                      결제하고 수강하기
                     </button>
                   ) : (
                     <button

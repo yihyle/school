@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * dedup_key 로 동일 사건 중복 발송을 막고(멱등성), 실패 시 retry_count 로 재시도한다.
  */
 @Entity
-@Table(name = "notification")
+@Table(name = "notification", uniqueConstraints = @UniqueConstraint(name = "uk_notification_dedup_key", columnNames = "dedup_key"))
 @Getter
 @Setter
 @NoArgsConstructor
